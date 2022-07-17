@@ -1,0 +1,17 @@
+{% extends "base.html.jinja" %}
+
+{% block main %}
+    <div class="main">
+        <div class="nav">
+            <div class="usericon">icon</div>
+            {% for _ in range(10) %}
+                <div class="navitem">nav item</div>
+            {% endfor %}
+            <div class="navicon">
+                <div class="line l1"></div>
+                <div class="line l2"></div>
+                <div class="line l3"></div>
+            </div>
+        </div>
+    </div>
+{% endblock main %}
