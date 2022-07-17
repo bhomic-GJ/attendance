@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = flask.Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost:3306/attendance'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost:3306/attendance'
 
 db = SQLAlchemy(app)
 
@@ -16,4 +16,4 @@ def main():
         result = connection.execute("SELECT COUNT(*) FROM USER")
         count = result.fetchone()[0]
     # return flask.render_template("dba_init_gj.html")
-    return flask.render_template("index.jinja.html", count = count)
+    return flask.render_template("index.html.jinja", count = count)
