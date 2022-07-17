@@ -11,11 +11,9 @@ show_help() {
 }
 
 setup_app() {
-    python3 -m venv venv
-    . venv/bin/activate
-    pip install -r requirements.txt
-    # mysql -u root -e "DROP DATABASE IF EXISTS attendance; CREATE DATABASE attendance"
-    # mysql -u root attendance < Attendance.sql
+    pip install -r requirements.txt;
+    mysql -u root -e "DROP DATABASE IF EXISTS attendance; CREATE DATABASE attendance";
+    mysql -u root attendance < "Attendance.sql";
 }
 
 run_app() {
