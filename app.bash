@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+show_help() {
+    echo "usage: $0 [{run,start,help,install}]"
+    echo ""
+    echo "  run,start   start the web application (via flask)"
+    echo "  help        show this help message and exit"
+    echo "  install     setup the requirements for the app"
+    echo "              (dependencies and software)"
+    echo ""
+}
+
+setup_app() {
+    python3 -m venv venv
+    . venv/bin/activate
+    pip install -r requirements.txt
+    # mysql -u root -e "DROP DATABASE IF EXISTS attendance; CREATE DATABASE attendance"
+    # mysql -u root attendance < Attendance.sql
+}
+
+run_app() {
+    export FLASK_ENV=development
+    export FLASK_APP=attendance
+    
+    flask run
+}
+
+ARG="${1:-start}"
+case "${ARG//-/}" in
+    h|help)
+        show_help
+        ;;
+    run|start)
+        run_app
+        ;;
+    i|install)
+        setup_app
+        ;;
+esac
