@@ -17,7 +17,18 @@
                 <div class="line l3"></div>
             </div>
         </div>
+        <div class="box mx-6 mb-6">
+            <form>
+                <input type="submit" name="generate" class="button is-info" value="Generate QR Code">
+            </form>
+            <div>
+                {% if qrpath %}
+                <img src="{{ qrpath }}">
+                {% endif %}
+            </div>
+        </div>
     </div>
+    
 {% endblock main %}
 
 {% block scripts_block %}
