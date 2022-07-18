@@ -17,6 +17,10 @@ setup_app() {
 }
 
 run_app() {
+    if ! [[ -v VIRTUAL_ENV ]]; then
+        source venv/bin/activate;
+    fi
+
     export FLASK_ENV=development
     export FLASK_APP=attendance
     
