@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `ACTIVE_SCHEDULE` (
-  `Creator` varchar(30) NOT NULL,
+  `Creator` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `Token` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `ACTIVE_SCHEDULE` (
 --
 
 CREATE TABLE `ADMIN` (
-  `ID` varchar(30) NOT NULL
+  `ID` varchar(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -52,10 +52,10 @@ CREATE TABLE `ADMIN` (
 --
 
 CREATE TABLE `ATTENDANCE` (
-  `ID` varchar(30) NOT NULL,
-  `Creator` varchar(30) NOT NULL,
+  `ID` varchar(36) NOT NULL,
+  `Creator` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `Record_Time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -68,8 +68,8 @@ CREATE TABLE `ATTENDANCE` (
 
 CREATE TABLE `GROUP` (
   `Name` varchar(200) NOT NULL,
-  `OID` varchar(30) NOT NULL,
-  `Creator` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
+  `Creator` varchar(36) NOT NULL,
   `Creation_Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -81,7 +81,7 @@ CREATE TABLE `GROUP` (
 
 CREATE TABLE `GROUP_HIERARCHY` (
   `Name` varchar(200) NOT NULL,
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `Parent` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -92,9 +92,9 @@ CREATE TABLE `GROUP_HIERARCHY` (
 --
 
 CREATE TABLE `MEMBERSHIP` (
-  `ID` varchar(30) NOT NULL,
+  `ID` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `Membership_Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -105,10 +105,11 @@ CREATE TABLE `MEMBERSHIP` (
 --
 
 CREATE TABLE `ORGANIZATION` (
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `Name` varchar(400) NOT NULL,
   `Address` varchar(400) DEFAULT NULL,
-  `Website` varchar(2500) DEFAULT NULL
+  `Website` varchar(2500) DEFAULT NULL,
+  `Code` varchar(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -118,9 +119,9 @@ CREATE TABLE `ORGANIZATION` (
 --
 
 CREATE TABLE `SCHEDULE` (
-  `Creator` varchar(30) NOT NULL,
+  `Creator` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `End_Time` time NOT NULL,
   `Commencement_Date` date NOT NULL,
@@ -135,16 +136,16 @@ CREATE TABLE `SCHEDULE` (
 --
 
 CREATE TABLE `USER` (
-  `ID` varchar(30) NOT NULL,
+  `ID` varchar(36) NOT NULL,
   `Name` varchar(200) NOT NULL,
   `Username` varchar(200) NOT NULL,
   `Password_Hash` varchar(1024) NOT NULL,
   `Password_Salt` varchar(256) NOT NULL,
   `Address` varchar(400) DEFAULT NULL,
   `Contact` bigint(20) DEFAULT NULL,
-  `email` varchar(256) DEFAULT NULL,
+  `Email` varchar(256) DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
-  `OID` varchar(30) NOT NULL,
+  `OID` varchar(36) NOT NULL,
   `OJoin_Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -198,7 +199,8 @@ ALTER TABLE `MEMBERSHIP`
 -- Indexes for table `ORGANIZATION`
 --
 ALTER TABLE `ORGANIZATION`
-  ADD PRIMARY KEY (`OID`);
+  ADD PRIMARY KEY (`OID`),
+  ADD UNIQUE KEY `Code` (`Code`);
 
 --
 -- Indexes for table `SCHEDULE`
@@ -213,7 +215,6 @@ ALTER TABLE `SCHEDULE`
 ALTER TABLE `USER`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `Username` (`Username`),
-  ADD UNIQUE KEY `Username_2` (`Username`),
   ADD KEY `OFK` (`OID`);
 
 --
@@ -230,8 +231,7 @@ ALTER TABLE `ACTIVE_SCHEDULE`
 -- Constraints for table `ADMIN`
 --
 ALTER TABLE `ADMIN`
-  ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `USER` (`ID`),
-  ADD CONSTRAINT `admin_ibfk_2` FOREIGN KEY (`ID`) REFERENCES `USER` (`ID`);
+  ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `USER` (`ID`);
 
 --
 -- Constraints for table `ATTENDANCE`
