@@ -20,6 +20,7 @@ platformdirs==2.5.2
 pycparser==2.21
 pylint==2.14.4
 PyQRCode==1.2.1
+python-dotenv==0.20.0
 qrcode==7.3.1
 SQLAlchemy==1.4.39
 tomli==2.0.1
