@@ -1,0 +1,24 @@
+{% extends "base.html.jinja" %}
+
+{% block main %}
+<div class="container is-fullhd is-fluid">
+    <section class="hero ">
+        {# <div class="hero-body"> #}
+
+        {# </div> #}
+        <div class="columns is-centered is-vcentered is-desktop">
+            <div class="column is-centered">
+                <section class="hero is-medium">
+                    <div class="hero-body">
+                        <p class="title is-spaced">About</p>
+                        <p class="subtitle">
+                        </p>
+                </section>
+            </div>
+            <div class="column">
+                {% include "ui/register.html.jinja" %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock main %}

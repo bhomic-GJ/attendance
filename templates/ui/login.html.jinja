@@ -1,0 +1,48 @@
+{% extends "base.html.jinja" %}
+
+{% block main %}
+<article class="container">
+    <section class="hero">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <p class="title">
+        Login
+      </p>
+    </div>
+  </div>
+</section>
+    <div class="columns is-centered">
+        <div class="column is-half">
+            <div class='box'>
+                <form action="#">
+                    {# username #}
+                    <div class="field">
+                        <label class="label">Username/Email</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" placeholder="Text input" name='username' required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span class="icon is-small is-right">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    {# password #}
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control">
+                            <input class="input" type="password" placeholder="Password" required>
+                        </div>
+                    </div>
+
+                    <div class="control">
+                        <button class="button is-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock main %}
