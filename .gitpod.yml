@@ -3,8 +3,12 @@ image:
 
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - init: python -m venv venv && . venv/bin/activate && pip install -r requirements.txt
-    command: ./start.bash
+  - init: >
+      chmod +x app.bash &&
+      python3 -m venv venv &&
+      . venv/bin/activate &&
+      ./app.bash install
+    command: ./app.bash start
     
 
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/

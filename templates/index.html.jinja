@@ -1,10 +1,14 @@
 {% extends "base.html.jinja" %}
 
+{% block css_block %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.index.css') }}">
+{% endblock css_block %}
+
 {% block main %}
     <div class="main">
         <div class="nav">
             <div class="usericon">icon</div>
-            {% for _ in range(10) %}
+            {% for _ in range(3) %}
                 <div class="navitem">nav item</div>
             {% endfor %}
             <div class="navicon">
@@ -13,5 +17,20 @@
                 <div class="line l3"></div>
             </div>
         </div>
+        <div class="box mx-6 mb-6">
+            <form>
+                <input type="submit" name="generate" class="button is-info" value="Generate QR Code">
+            </form>
+            <div>
+                {% if qrpath %}
+                <img src="{{ qrpath }}">
+                {% endif %}
+            </div>
+        </div>
     </div>
+    
 {% endblock main %}
+
+{% block scripts_block %}
+    <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+{% endblock scripts_block %}

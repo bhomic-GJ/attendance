@@ -27,11 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             nav.style.transform = "translateX(-100%)";
         }
         else {
-            nav.style.transform = "none";
             l1.classList = "line l1";
             l2.classList = "line l2";
             l3.classList = "line l3";
 
+            nav.style.transform = "none";
         }
     }
 });

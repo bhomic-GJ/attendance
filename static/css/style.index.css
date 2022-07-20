@@ -12,11 +12,12 @@
 }
 
 .nav {
-    position: relative;
+    position: fixed !important;
     z-index: 4;
     transition: all 0.3s;
     background-color: #fff;
-    display: flex;
+    display: inline-flex;
+    float:left;
     flex-direction: column;
     width: 80vw;
     height: 100vh;
