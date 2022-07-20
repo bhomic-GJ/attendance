@@ -70,7 +70,7 @@ CREATE TABLE `GROUP` (
   `Name` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Creator` varchar(36) NOT NULL,
-  `Creation_Date` date NOT NULL
+  `Creation_Date` timestamp DEFAULT current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -95,7 +95,7 @@ CREATE TABLE `MEMBERSHIP` (
   `ID` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
-  `Membership_Date` date NOT NULL
+  `Membership_Date` timestamp DEFAULT current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -124,7 +124,7 @@ CREATE TABLE `SCHEDULE` (
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `End_Time` time NOT NULL,
-  `Commencement_Date` date NOT NULL,
+  `Commencement_Date` timestamp DEFAULT current_timestamp,
   `Status` int(11) NOT NULL,
   `Frequency` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -146,7 +146,7 @@ CREATE TABLE `USER` (
   `Email` varchar(256) DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `OID` varchar(36) NOT NULL,
-  `OJoin_Date` date NOT NULL
+  `OJoin_Date` timestamp DEFAULT current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
