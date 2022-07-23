@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="box mx-6 mb-6">
+        <div id="container">
+            <video autoplay="true" id="videoElement"></video>
+            <button onclick="theCloak();">QR</button>
+            <script>
+                function theCloak() {
+                    document.getElementById("videoElement").style.display = "none";
+                }
+            </script>
+        </div>
+        <script src="{{ url_for('static', filename='scripts/attendance.js') }}"></script>
+        <script type="module">
+            import QrScanner from "{{ url_for('static', filename='scripts/qr-scanner.min.js') }}";
+            const qrScanner = new QrScanner(
+                document.getElementById("videoElement"),
+                result => { console.log('decoded qr code:', result); qrScanner.stop() },
+                { /* your options or returnDetailedScanResult: true if you're not specifying any other options */ },
+            );
+            // qrScanner.start();
+
+            fetchData("api/organization/verify", {
+                body: { 'name': 'TempOrg', 'code': 'ABCDEF' },
+                method: 'POST'
+            })
+            .then(response => console.log(response));
+        </script>
+</body>
+
+</html>

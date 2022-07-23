@@ -1,3 +1,4 @@
+
 image:
   file: .gitpod.dockerfile
 
@@ -15,3 +16,7 @@ tasks:
 ports:
   - port: 3000
     onOpen: open-preview
+
+vscode:
+  extensions:
+    - mblode.pretty-formatter
