@@ -18,8 +18,8 @@
 <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item" href="https://bulma.io">
-                <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            <a class="navbar-item" href="/">
+                <p class="title has-text-primary">Attendance.io</p>
             </a>
 
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -31,33 +31,56 @@
         </div>
 
         <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" href="#">
-                    Profile
-                </a>
-                <a class="navbar-item" href="#">
-                    Attendance
-                </a>
-                <a class="navbar-item" href="#">
-                    Generate Report
-                </a>
-            </div>
-
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-primary">
-                            <strong>Sign up</strong>
-                        </a>
-                        <a class="button is-light">
-                            Log in
-                        </a>
+            {% if current_user %}
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{{ url_for('routes.users.current_user') }}">
+                        Profile
+                    </a>
+                    <a class="navbar-item" href="{{ url_for('routes.sched.home') }}">
+                        Schedule
+                    </a>
+                    <a class="navbar-item" href="#">
+                        Report
+                    </a>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" href="{{ url_for('routes.auth.logout') }}">
+                                Logout
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" href="{{ url_for('routes.auth.register') }}">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-light" href="{{ url_for('routes.auth.login') }}">
+                                Log in
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </nav>
-    {% block main %}{% endblock main %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% for category, message in messages %}
+            <div class="notification is-light is-{{ category }}">
+                <p> {{ message }} </p>
+            </div>
+        {% endfor %}
+    {% endwith %}
+    {% block main %}
+        <article class="container is-fullhd is-fluid">
+            {% block sub_main %}
+            {% endblock sub_main %}
+        </article>
+    {% endblock main %}
     <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
     {% block scripts_block %}{% endblock scripts_block %}
 </body>

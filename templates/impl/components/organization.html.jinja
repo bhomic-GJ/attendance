@@ -1,0 +1,48 @@
+{# Organization name #}
+{% if organization %}
+    <div class="field">
+        <label class="label">Name</label>
+        <div class="control">
+            <input class="input is-static" type="text" name='Name'
+                placeholder="Name" readonly
+                value="{{ organization.Name }}">
+        </div>
+    </div>
+
+    {# Organization address #}
+    <div class="field">
+        <label class="label">Address</label>
+        <div class="control">
+            <input class="input is-static" type="text" name='address'
+                placeholder="Address of the organization" readonly
+                value="{{ organization.Address or '' }}">
+        </div>
+    </div>
+
+    {# Organization email #}
+    <div class="field">
+        <label class="label">Website</label>
+        <div class="control">
+            <input class="input is-static" type="url" name='website'
+                placeholder="Website URL" readonly
+                value="{{ organization.Website or '' }}">
+        </div>
+    </div>
+
+    {% if hierarchy is defined %}
+        <!-- TODO -->
+        <h1></h1>
+    {% else %}
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <a class="button is-primary" href="{{ url_for('routes.org.view', org_id=organization.OID) }}">
+                    <span>View Details</span>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    <div class='notification is-info is-light'>
+        This user is not affiliated with any organization.
+    </div>
+{% endif %}

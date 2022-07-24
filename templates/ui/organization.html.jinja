@@ -1,0 +1,84 @@
+{% extends "base.html.jinja" %}
+
+{% block sub_main %}
+    <p class="title">Organization Details</p>
+    <div class="box">
+        {% include "impl/components/organization.html.jinja" %}
+    </div>
+
+    <h1 class="title">Organization Hierarchy</h1>
+    <article class="box">
+        {% for group in hierarchy %}
+        <div class="notification is-light">
+            <p>
+                <span class="title">Group {{ group.name or '<root>' | e }}</span>
+                <nav class="breadcrumb is-right has-succeeds-separator" aria-label="breadcrumbs">
+                    <ul>
+                        {% for name in group.path %}
+                            <li><a href="#">{{ name }}</a></li>
+                        {% endfor %}
+                        <li class="is-active">
+                            {%- if group.name %}
+                                <a href="#" aria-current="page">{{ group.name }}</a>
+                            {% else %}
+                                <a href="#" aria-current="page">{{ 'root' }}</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </nav>
+            </p>
+            {% if group.members %}
+            <div class="table-container">
+            <table class="table is-fullwidth is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>S. No.</th>
+                        <th>Name</th>
+                        <th>E-Mail Address</th>
+                        <th>Contact</th>
+                        <th>Role</th>
+                        <th>Toggle Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in group.members %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <a href="{{- url_for('routes.users.user', user_id=member.ID) -}}">
+                                    {{ member.Name }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="mailto:{{- member.Email or '' -}}">
+                                    {{ member.Email or 'Unknown' }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="tel:{{- member.Contact or '' -}}">
+                                    {{ member.Contact or 'Unknown' }}
+                                </a>
+                            </td>
+                            <td>{{ member.Role }}</td>
+                            <td>
+                                <button class="button is-info">
+                                    <span>Change</span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <div class="notification is-info is-light">
+                <p>This group does not have any exclusive members.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </article>
+
+
+
+{% endblock sub_main %}

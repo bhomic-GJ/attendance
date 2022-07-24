@@ -1,4 +1,4 @@
-async function fetchData (url, options = {}) 
+async function fetchData (url, options = {})
 {
     try {
         if(options) {
