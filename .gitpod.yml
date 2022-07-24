@@ -10,7 +10,6 @@ tasks:
       . venv/bin/activate &&
       ./app.bash install
     command: ./app.bash start
-    
 
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 ports:
