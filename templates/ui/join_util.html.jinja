@@ -5,13 +5,14 @@
         </div>
         <div class='column'>
             <div class='box'>
-                <form method="POST">
+                <form action="{{ url_for('routes.org.join') }}" method="POST">
                     <div class="field">
                         <label class="label">Organization</label>
                         <div class="select is-fullwidth">
                             <select name="OID">
                                 {% for org in orgs %}
-                                <option value="{{ org.OID }}">{{ org.Name }} ({{ org.Website or '<No website>' | e }})</option>
+                                <option value="{{ org.OID }}">{{ org.Name }} ({{ org.Website or '<No website>' | e }})
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -19,8 +20,7 @@
                     <div class="field">
                         <label class="label">Join Code</label>
                         <div class="control">
-                            <input class="input" type="text" name="code"
-                                placeholder="Joining code" required>
+                            <input class="input" type="text" name="code" placeholder="Joining code" required>
                         </div>
                     </div>
                     <div class="field is-grouped is-grouped-right">

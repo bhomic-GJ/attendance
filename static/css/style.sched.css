@@ -1,3 +1,49 @@
-html, body {
-    overflow-y: hidden;
+html,
+body {
+    min-height: 100vh;
+}
+
+.table-data {
+    height: 90vh;
+    overflow-y: scroll;
+}
+
+.cell {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.ename {
+    font-size: 0.8em;
+}
+
+.e-creator {
+    font-size: 0.7em;
+    text-align: right;
+}
+
+.no-border {
+    border-top: 0px none !important;
+    border-left: 0px none !important;
+    /* border-style : hidden!important; */
+}
+
+#sticky{
+    position: -webkit-sticky; 
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #fff; 
+}
+
+
+.shiftup{
+    position: relative;
+    transform : translateY(-21px);
+    z-index: 15;
+}
+
+#calendar{
+    height:90vh;
 }

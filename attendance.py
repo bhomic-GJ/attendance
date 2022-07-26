@@ -55,7 +55,6 @@ def verify_token(token):
     for _token, data in tokens.items():
         if int(time.time()) - data['timestamp'] > 24 * 3600:
             del tokens[_token]
-    print(tokens)
     if token in tokens:
         return tokens[token]
 
