@@ -125,6 +125,7 @@ CREATE TABLE `SCHEDULE` (
   `Start_Time` time NOT NULL,
   `End_Time` time NOT NULL,
   `Commencement_Date` datetime DEFAULT current_timestamp,
+  `Title` varchar(200) DEFAULT NULL,
   `Status` int(11) NOT NULL,
   `Frequency` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
