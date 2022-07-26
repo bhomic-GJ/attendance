@@ -40,6 +40,7 @@ def create_blueprint(auth, tokens, database, *args, **kwargs):
     @blueprint.route("/<uuid:organization>/<group>/view/members", methods=[ "GET" ])
     def get_group_members(organization, group=None):
         hierarchy = database.get_member_hierarchy(organization, group)
+        print(hierarchy)
         return flask.jsonify({
             'status': True,
             'code': 200,

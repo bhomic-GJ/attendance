@@ -61,17 +61,21 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
 
         return flask.redirect(flask.url_for("routes.users.current_user"))
 
-    @blueprint.route("/<uuid:org_id>/join", methods=[ 'POST' ])
+    @blueprint.route("/join", methods=[ 'POST' ])
     @login_required(auth)
-    def join(org_id):
+    def join():
+        org_id = utils.get_field(flask.request, 'OID')
         code = utils.get_field(flask.request, 'code')
         result = database.get_organization_by_id(org_id)
         if not result or result.Code != code:
             flask.flash("Incorrect joining code. Specify the correct code to join.", category="danger")
         user = auth.current_user() or flask.g.user
+        # Delete previous privileges
+        if database.get_user_role(user['ID']) == 'admin':
+            database.set_user_role(user['ID'], 'non-admin')
         database.remove_user_associations(user['ID'])
         database.update_user(user['ID'], { 'OID': result.OID })
-        return flask.redirect("routes.user.current_user"), 200
+        return flask.redirect("routes.users.current_user"), 200
 
     @blueprint.route("/edit")
     @login_required(auth)

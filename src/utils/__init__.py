@@ -30,6 +30,9 @@ def parse_date(datestr):
             isodate.parse_date(datestr), datetime.time.min()
         )
 
+def parse_time(timestr):
+    return isodate.parse_time(timestr)
+
 class CodeGenerator:
     """ Defines an abstraction that generates assured unique codes
         using a generator function, by remembering previously

@@ -54,7 +54,7 @@ class AttendanceDatabase:
                 for atomic_queries in queries:
                     with connection.begin() as transaction:
                         result.append([
-                            transaction.execute(*query)
+                            connection.execute(*query)
                             for query in atomic_queries
                         ])
                 return result
@@ -113,6 +113,13 @@ class AttendanceDatabase:
         result = self.execute(query)[0].fetchall()
         return [ row.Code for row in result ]
 
+    def set_user_role(self, user_id, role):
+        if role == 'non-admin':
+            query = self.admin.delete().where(self.admin.c.ID == user_id)
+        else:
+            query = self.admin.insert().values(ID=user_id)
+        return self.execute(query)[0].rowcount == 1
+
     def update_user(self, user_id, params):
         if 'OID' in params: params['OJoin_Date'] = sql.func.now()
         if 'ID' in params: del params['ID']
@@ -146,6 +153,11 @@ class AttendanceDatabase:
         .order_by(self.group_hierarchy.c.Name.asc())
         result = self.execute(children_query)[0]
         return [ row.Name for row in result.fetchall() ]
+
+    def get_user_groups(self, user_id):
+        query = sql.select([ self.membership.c.GName ]).where(self.membership.c.ID == user_id)
+        groups = [ row.Gname for row in self.execute(query)[0].fetchall() ]
+        return groups
 
     def get_group_hierarchy(self, organization, root_group=None):
         hierarchy = {}
@@ -209,12 +221,34 @@ class AttendanceDatabase:
         queue = [ (root_group, hierarchy) ]
         while len(queue) > 0:
             group, href = queue.pop(0)
-            href['members'] = self.get_members(organization, group)
+            href['members'] = [ { **row } for row in self.get_members(organization, group) ]
             children = self.get_subgroups(organization, group)
             for child in children:
                 href['children'][child] = { 'children': {}, 'members': None }
                 queue.append( ( child, href['children'][child] ) )
         return hierarchy
+
+    def get_schedules_for_user(self, user_id, date):
+        query = sql.select([ self.schedule ]).where(
+            (self.schedule.c.OID == sql.select([ self.user.c.OID ])\
+                .where(self.user.c.ID == user_id).scalar_subquery())\
+                .where(
+                    (self.schedule.c.Creator == user_id) |
+                    (self.schedule.c.GName.in_(self.get_user_groups(user_id)))
+                )
+                # .where(
+                #     sqlalchemy.case(
+                #         {
+                #             '0': self.schedule.c.Commencement_Date == date,
+                #             '1': (date )
+                #         },
+                #         value=self.schedule.c.status
+                #     )
+                # )
+        )
+        print(query)
+        return self.execute(query)[0].fetchall()
+        pass
 
     def do_nothing(self):
         pass
