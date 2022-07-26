@@ -13,6 +13,9 @@ show_help() {
 }
 
 setup_app() {
+    if ! [[ -v VIRTUAL_ENV ]]; then
+        source venv/bin/activate;
+    fi
     pip install -r requirements.txt;
     mysql -u root -e "DROP DATABASE IF EXISTS attendance; CREATE DATABASE attendance";
     mysql -u root attendance < "Attendance.sql";
@@ -34,7 +37,7 @@ snapshot_data() {
         source venv/bin/activate;
     fi
 
-    mysqldump > Attendance.sql
+    mysqldump attendance > Attendance.sql
     pip freeze > requirements.txt
 }
 
@@ -46,10 +49,10 @@ case "${ARG//-/}" in
     run|start)
         run_app
         ;;
-    i|install)
+    i|install|restore)
         setup_app
         ;;
-    snapshot)
+    backup|snapshot)
         snapshot_data
         ;;
 esac
