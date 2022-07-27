@@ -172,9 +172,10 @@
                 events: [
                     {% for event in data %}
                         {
-                            title: '{{ event.GName }} {{ event.Creator }}',
+                            title: '{{ event.GName }}-{{ event.Creator }}',
                             start: '2022-07-25T{{- event.Start_Time -}}:00',
                             end: '2022-07-25T{{- event.End_Time -}}:00',
+                            mygroup: 'TEMP'
                         },
                     {% endfor %}
                 ]
@@ -192,23 +193,26 @@
                     //console.log('Event: ');
                     //console.log(info.event.title);
                     //console.log(info.event.start);
-                    //console.log(info.event.end);
+                    console.log(info.event);
+
+                    let gname = info.event.title.split('-')[0];
 
                     let payload = {
-                        'title': info.event.title,
-                        'start': info.event.start,
-                        'end': info.event.end
+                        'group': gname,
+                        'start': info.event.startStr,
+                        'end': info.event.endStr
                     };
 
-                    console.log(payload);
+                    //console.log(payload);
 
                     let form = document.createElement('form');
                     form.style.visibility = 'hidden'; 
                     form.method = 'POST';
 
 
+                    let current_role = 'admin';
                     if(current_role == 'admin'){
-                        form.action = 'index.html';
+                        form.action = '/playground';
                     }
                     else
                     if(current_role == 'non-admin'){
@@ -223,7 +227,7 @@
                         form.appendChild(input);
                     }
                     
-                    console.log(form);
+                    //console.log(form);
 
                     document.body.appendChild(form);
                     form.submit();
