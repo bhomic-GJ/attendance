@@ -60,9 +60,10 @@ def verify_token(token):
 
 @auth.get_user_roles
 def get_user_roles(user):
-    if 'role' not in user:
-        user['role'] = database.get_user_role(user['ID'])
-    return user['role']
+    # if 'role' not in user:
+    #     user['role'] = database.get_user_role(user['ID'])
+    # return user['role']
+    return database.get_user_role(user['ID'])
 
 # Register the standard endpoints.
 app.register_blueprint(
@@ -86,10 +87,9 @@ def playground():
     return flask.jsonify({
         'method': flask.request.method,
         'headers': { **flask.request.headers },
-        'args': { **flask.request.args },
-        'form': { **flask.request.form },
-        'session': { **flask.session },
-        'tokens': { **tokens }
+        'args': { key: utils.get_field(flask.request, key, allow_null=True) or '' for key in flask.request.args },
+        'form': { key: utils.get_field(flask.request, key, allow_null=True) or '' for key in flask.request.form },
+        'session': { **flask.session }
     })
 
 @app.route("/attadm")
@@ -97,7 +97,7 @@ def playground():
 def attendance_admin():
     user = auth.current_user() or flask.g.user
     print(user['role'])
-    qr_path = utils.qrcode.generate_qr("{ message: 'Hello world!' }", "assets", "static")
+    qr_path = utils.qrcode.generate_qr("{ message: 'Hello world!' }", "assets", "qr", prefix="static")
     return flask.render_template(
         "ui/attendance.html.jinja",
         current_user=user,
