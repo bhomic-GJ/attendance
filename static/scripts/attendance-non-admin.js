@@ -5,15 +5,15 @@ const qrScanner = new QrScanner(
     result => {
         qrScanner.stop();
         console.log('decoded qr code:', result);
-        
+
         try {
 
             let data = JSON.parse(result);
-            console.log(data); 
-                    
-                         
+            console.log(data);
+
+
         } catch (error) {
-            
+
         }
 
         // getUserData()
@@ -42,7 +42,7 @@ document.querySelector('#qrbtn').addEventListener('click', () => {
     qrtoggle = (qrtoggle + 1)%2;
     if(qrtoggle == 1){
         qrScanner.start();
-    }    
+    }
     else{
         qrScanner.stop();
     }
