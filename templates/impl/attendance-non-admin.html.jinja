@@ -1,5 +1,23 @@
-{% extends "base.html.jinja" %}
+{% block css_block %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend-non-adm.css') }}">
+{% endblock css_block %}
 
-{% block main %}
-    
-{% endblock main %}
+{% block scripts_block %}
+    <script src="{{ url_for('static', filename='scripts/attendance.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='scripts/qr-scanner.min.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='scripts/attendance-non-admin.js') }}"></script>
+{% endblock scripts_block %}
+
+{% block sub_main %}
+        <div class="container">
+            <div class="block">
+                <div class="cameracrop">
+                    <video autoplay="true" id="videoElement"></video>
+                </div>
+            </div>
+            <div class="block">
+                <button class="button is-info" id="qrbtn">Scan QR</button>
+            </div>
+        </div>
+
+{% endblock sub_main %}

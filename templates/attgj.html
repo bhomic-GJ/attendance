@@ -1,0 +1,479 @@
+<html>
+<head>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/css/bulma-extensions.min.css">
+
+<style type="text/css">
+*{
+  margin: 0px;
+  padding:  0px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+html{
+	  scroll-behavior: smooth;
+}
+
+.body{
+	
+}
+
+.myhero{
+  background-color: #001220;
+  position: relative;
+  min-height: 100vh;
+}   
+
+.wave{
+	position: absolute;
+	width:100%;
+	bottom: 0px;
+}
+
+.appname
+{
+	z-index:;
+	position: absolute;
+	font-size: 7vw;
+	color: #fff;
+	text-align: center;
+	width: 100%;
+	top: 25vh;
+	text-shadow: 0 0 10px #fff;
+	padding-bottom: 2rem;
+	animation: glow 3s linear infinite;
+}
+
+@keyframes glow{
+	0%{
+		text-shadow: 0 0 0px #fff;
+	}
+	50%{
+		text-shadow: 0 0 10px #fff;
+	}
+	100%{
+		text-shadow: 0 0 0px #fff;
+	}
+}
+
+@keyframes appanim{
+0%{
+	opacity: 0.1;
+}
+50%{
+	opacity: 1;
+}
+100%{
+	opacity: 0.1;
+}
+}
+
+.opac{
+	animation: appanim 3s linear infinite;
+}
+
+.see-more{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #ff006600;
+	position: absolute;
+	width: 100%;
+	top: 60vh;
+}
+
+.go-down{
+	width: 30%;
+	z-index: 10;
+    -webkit-filter: invert(100%); /* Safari/Chrome */
+    filter: invert(100%);
+    animation: downup 2s ease-in-out infinite;
+}
+
+@keyframes downup{
+0%{
+	transform: translateY(-20%);
+}
+
+
+50%{
+	transform: translateY(20%);
+}
+
+100%{
+	transform: translateY(-20%);
+}
+
+}
+
+.flex-center{
+	display: flex;
+	justify-content: center;
+}
+
+
+.bottom-page{
+	min-height: 100vh;
+	background-color: #001220;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+
+.leftblock, .rightblock{
+	width: 45%;
+	background-color: #ffffff11;
+	padding:3rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-height: 80vh;
+	margin: 3rem;
+	border-radius: 10px;
+}
+
+
+@media (max-width: 1000px){
+	.bottom-page{
+		flex-direction: column;
+	}
+
+	.leftblock, .rightblock{
+		width: 90%;
+	}
+
+	.appname{
+		font-size: 12vw;
+	}
+}
+
+.about{
+	font-size: 3em;
+	color: #fff;
+}
+
+.tagline{
+	color: #fff;
+	margin-top: 1rem;
+}
+
+.leftblock{
+	min-height: 100vh;
+}
+.rightblock{
+	padding: 0rem;
+	position: relative;
+	min-height: 100vh;
+}
+
+.regblock{
+	display: flex;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	position: absolute;
+	top:0px;
+	left: 0px;
+   padding: 0.3rem;
+}
+
+.fwhite{
+	color: #fff;
+}
+
+.bcontainer{
+	margin-bottom: 2rem;
+}
+
+.bt{
+	font-size: 2em;
+}
+
+.bst{
+	font-size: 1em;
+}
+
+
+
+
+
+
+.dark{
+	background-color: #001220;
+}
+
+.topfix{
+	position: fixed;
+	top:0px;
+	width: 100%;
+}
+
+.atticon{
+	background-color: #fff;
+	border-radius: 50%;
+	background-image: url("https://i.imgur.com/gry5fzw.png");
+	width: 50px;
+	height: 50px;
+	background-size: cover;
+	background-position: center;
+}
+
+.hovergreen{
+	display: grid;
+	place-items:center;
+	padding: 0rem 0.6rem;
+	margin: 0 1px;
+	color: #fff;
+	min-height: 50px;
+}
+
+.hovergreen:hover{
+	color: #000;
+	background-color: #42ddae;
+}
+
+#navbarBasicExample{
+	background-color: #001220;
+}
+
+
+.navbar-burger{
+    color: #fff;
+}
+
+.navbar-burger:hover{
+    color: #42ddae;
+}
+
+</style>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach(el => {
+        el.addEventListener('click', () => {
+
+            // Get the target from the "data-target" attribute
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+
+        });
+    });	
+});    
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+
+
+    <nav class="navbar dark topfix" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+                <div class="atticon" ></div>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="hovergreen" href="#">
+                    Profile
+                </a>
+                <a class="hovergreen" href="#">
+                    Attendance
+                </a>
+                <a class="hovergreen" href="#">
+                    Generate Report
+                </a>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a href="#first-section" class="button is-primary">
+                            <strong>Sign up</strong>
+                        </a>
+                        <a href="logingj.html" class="button is-light">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+      	
+    <div  class="main">
+      <div class="myhero">
+
+<div class="wave">
+<svg id="visual" viewBox="0 0 900 600"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><rect x="0" y="100" width="900" height="400" fill="#001220"></rect><path class="opac" style="transition-delay:0s" d="M0 395L21.5 390.3C43 385.7 86 376.3 128.8 370.7C171.7 365 214.3 363 257.2 369.5C300 376 343 391 385.8 398.8C428.7 406.7 471.3 407.3 514.2 402C557 396.7 600 385.3 642.8 389C685.7 392.7 728.3 411.3 771.2 416C814 420.7 857 411.3 878.5 406.7L900 402L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z" fill="#42ddae"></path><path class="opac" style="transition-delay:4s" d="M0 425L21.5 423.8C43 422.7 86 420.3 128.8 424.2C171.7 428 214.3 438 257.2 443.3C300 448.7 343 449.3 385.8 452C428.7 454.7 471.3 459.3 514.2 461.8C557 464.3 600 464.7 642.8 459.3C685.7 454 728.3 443 771.2 438.3C814 433.7 857 435.3 878.5 436.2L900 437L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z" fill="#2abc9c"></path><path class="opac" style="transition-delay:2s" d="M0 485L21.5 480.3C43 475.7 86 466.3 128.8 463.2C171.7 460 214.3 463 257.2 468.3C300 473.7 343 481.3 385.8 480.3C428.7 479.3 471.3 469.7 514.2 471C557 472.3 600 484.7 642.8 489.3C685.7 494 728.3 491 771.2 490.7C814 490.3 857 492.7 878.5 493.8L900 495L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z" fill="#189c88"></path><path class="opac" style="transition-delay:8s" d="M0 495L21.5 493.7C43 492.3 86 489.7 128.8 492.3C171.7 495 214.3 503 257.2 509.5C300 516 343 521 385.8 525.8C428.7 530.7 471.3 535.3 514.2 531.5C557 527.7 600 515.3 642.8 505.5C685.7 495.7 728.3 488.3 771.2 490.8C814 493.3 857 505.7 878.5 511.8L900 518L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z" fill="#107c72"></path><path class="opac" style="transition-delay:6s" d="M0 525L21.5 528.3C43 531.7 86 538.3 128.8 542.7C171.7 547 214.3 549 257.2 553.5C300 558 343 565 385.8 561C428.7 557 471.3 542 514.2 541.7C557 541.3 600 555.7 642.8 556.7C685.7 557.7 728.3 545.3 771.2 540.8C814 536.3 857 539.7 878.5 541.3L900 543L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z" fill="#115e5a"></path></svg>
+</div>
+
+
+<div class="appname">
+	Attendance.io
+</div>
+
+<div class="see-more">
+<a class="flex-center" href="#first-section"><img class="go-down" src="https://i.imgur.com/0HgqUpc.png"></a>
+</div>
+        </div> 
+
+        <div  id="first-section" class="bottom-page">
+
+        	<div class="leftblock"> 
+        		<div class="about">About Us</div>
+        		<div class="tagline">Marking the Attendance was never this easy.... orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsumorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</div>
+        	</div>
+
+        	<div class="rightblock"> 
+        		<div class="regblock">			
+
+        			<article class="container bcontainer">
+					  <section class="hero">
+					  <div class="hero-body">
+					    <div class="container has-text-centered">
+					      <p class="title fwhite bt">
+					        Register
+					      </p>
+					      <p class="subtitle fwhite bst">
+					        Create a new User account
+					      </p>
+					    </div>
+					  </div>
+					</section>
+					  <div class="columns is-centered">
+					    <div class="column is-half">
+					      <div class='box'>
+					        <form action="#">
+					          <div class="field">
+					            <label class="label">Name</label>
+					            <div class="control">
+					              <input class="input" type="text" name='name' placeholder="Name" required>
+					            </div>
+					          </div>
+
+					          <div class="field">
+					            <label class="label">Username</label>
+					            <div class="control has-icons-left has-icons-right">
+					              <input class="input" type="text" placeholder="Username" name='username' required>
+					              <span class="icon is-small is-left">
+					                <i class="fas fa-user"></i>
+					              </span>
+					              <span class="icon is-small is-right">
+					                <i class="fas fa-check"></i>
+					              </span>
+					            </div>
+					          </div>
+
+					          <div class="field">
+					            <label class="label">Email</label>
+					            <div class="control has-icons-left has-icons-right">
+					              <input class="input" type="email" name='e-mail' placeholder="E-mail Address" value="" required>
+					              <span class="icon is-small is-left">
+					                <i class="fas fa-envelope"></i>
+					              </span>
+					              <span class="icon is-small is-right">
+					                <i class="fas fa-exclamation-triangle"></i>
+					              </span>
+					            </div>
+					          </div>
+
+					          <div class="field">
+					            <label class="label">Password</label>
+					            <div class="control">
+					              <input class="input" type="password" placeholder="Password" required>
+					            </div>
+					          </div>
+
+					          <div class="field">
+					            <label class="label">Organization</label>
+					            <div class="control">
+					              <div class="select is-fullwidth">
+					                <select>
+					                  <option>Select dropdown</option>
+					                  <option>With options</option>
+					                </select>
+					              </div>
+					            </div>
+					          </div>
+
+					          <div class="control">
+					            <button class="button is-primary">Submit</button>
+					          </div>
+					        </form>
+					      </div>
+					    </div>
+					  </div>
+					</article>
+
+					<div>
+
+        		</div>
+        	</div>
+
+        </div>
+
+      </div>  
+   
+<script type="text/javascript">
+	
+    
+let navbar_start = document.querySelector('.navbar-start');
+
+let currently_login = 0;
+
+
+
+
+let navbar_start_content = `
+                <a class="hovergreen" href="#">
+                    Profile
+                </a>
+                <a class="hovergreen" href="#">
+                    Attendance
+                </a>
+                <a class="hovergreen" href="#">
+                    Generate Report
+                </a>`;
+
+function toggleNavItems(){
+    if(currently_login == 1){
+        navbar_start.innerHTML = navbar_start_content;
+    }    
+    else{
+        navbar_start.innerHTML = "";
+    }
+}
+
+toggleNavItems();
+
+
+</script>
+
+</body>
+</html>  

@@ -81,6 +81,29 @@ app.register_blueprint(
     )
 )
 
+@app.route("/playground", methods=["GET", "POST"])
+def playground():
+    return flask.jsonify({
+        'method': flask.request.method,
+        'headers': { **flask.request.headers },
+        'args': { **flask.request.args },
+        'form': { **flask.request.form },
+        'session': { **flask.session },
+        'tokens': { **tokens }
+    })
+
+@app.route("/attadm")
+@routes.login_required(auth)
+def attendance_admin():
+    user = auth.current_user() or flask.g.user
+    print(user['role'])
+    qr_path = utils.qrcode.generate_qr("{ message: 'Hello world!' }", "assets", "static")
+    return flask.render_template(
+        "ui/attendance.html.jinja",
+        current_user=user,
+        qr_url=flask.url_for('static', filename=qr_path)
+    )
+
 @app.route("/")
 def index():
     user = auth.current_user() or flask.g.user

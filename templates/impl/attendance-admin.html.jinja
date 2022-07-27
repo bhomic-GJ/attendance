@@ -1,0 +1,13 @@
+{% block css_block %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend-adm.css') }}"/>
+{% endblock css_block %}
+
+{% block scripts_block %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts/attendance-admin.js') }}"></script>
+    <script src="https://bhomic-ogj.github.io/attendance-gj/qrcode.min.js"></script>
+{% endblock scripts_block %}
+
+{% block sub_main %}
+    {% include "qrgenadmin/adminqr.html.jinja" %}
+{% endblock sub_main %}
