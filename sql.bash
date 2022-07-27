@@ -48,7 +48,7 @@ view() {
 # "
 
 # curl "http://localhost:5000/api/users/create" -d "name=DEF&username=DEF&password=1234"
-# curl "http://localhost:5000/api/users/login" -d "username=U1&password=1234"
+# curl "http://localhost:5000/api/users/login" -d "username=user1&password=1234"
 # curl "http://localhost:5000/api/users/view" -H "Authorization: Bearer REVGOo8uymUGVE9Vo4XGK3S4Two6wUlWYgpSEe2WEk43niBwBA=="
 
 # sql "INSERT INTO MEMBERSHIP() VALUES ('')"
@@ -72,16 +72,26 @@ view() {
 # describe "schedule";
 # describe "active_schedule";
 
-describe "schedule";
+# describe "schedule";
+# sql "select datediff('2022-07-28', '2022-07-26')"
 # view "organization";
+# view "admin";
+# view "user" "where username='user1'"
+# sql "insert into ADMIN values('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a')"
 
 # sql "DELETE FROM MEMBERSHIP"
 
 # view "user" "where username = 'DEF'";
 # describe "attendance";
 
-# view "ORGANIZATION";
+view "ORGANIZATION";
+view 'schedule';
+describe 'active_schedule';
+describe 'attendance';
+
+# sql "select * from SCHEDULE where mod(datediff('2022-08-03', Commencement_Date), Frequency) = 0"
 
 # curl "http://localhost:5000/api/group/61c8d38d-2c9e-4197-998e-0ef01eb3488c/view/members"
+# curl "http://localhost:5000/api/schedule/create" -d "group=A&start_time=09:00:00&end_time=11:00:00&start_date=2022-07-27&title=EV1&status=1&frequency=7" -H "Authorization: Bearer dXNlcjE65Tq3cJPVQU2XUjIrt41rmjojWkXYDLQR7btYRrPRrRwy3S8WjjDGMotJow"
 
 # sql "UPDATE USER SET OID='61c8d38d-2c9e-4197-998e-0ef01eb3488c', OJoin_Date=NOW() WHERE Username='DEF'"
