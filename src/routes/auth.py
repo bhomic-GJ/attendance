@@ -30,9 +30,38 @@ def create_blueprint(auth, tokens, database, *args, **kwargs):
             username=utils.get_field(flask.request, 'username', allow_null=True) or '',
         )
 
-    @blueprint.route("/register")
+    @blueprint.route("/register", methods=[ "GET", "POST" ])
     def register():
-        pass
+        in_get = flask.request.method == "GET"
+
+        password  = utils.get_field(flask.request, 'password', allow_null=in_get)
+
+        params = {
+            'Name'         : utils.get_field(flask.request, 'name'    , allow_null=in_get),
+            'Username'     : utils.get_field(flask.request, 'username', allow_null=in_get),
+            'Email'        : utils.get_field(flask.request, 'e-mail'  , allow_null=True),
+            'OID'          : None,
+            'OJoin_Date'   : None
+        }
+
+        if flask.request.method == "POST":
+            hashed_pw, salt = utils.hash_password(password)
+            params.update({
+                'ID'           : utils.new_uuid(),
+                'Password_Hash': hashed_pw,
+                'Password_Salt': salt,
+            })
+
+            try:
+                database.execute((database.user.insert(), params))
+                return flask.redirect(flask.url_for("routes.auth.login"))
+            except Exception:
+                flask.flash("An unexpected error occurred. Try again.", category='danger')
+
+        return flask.render_template(
+            "ui/register.html.jinja",
+            **params
+        )
 
     @blueprint.route("/logout")
     @login_required(auth)

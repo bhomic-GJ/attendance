@@ -81,32 +81,13 @@ app.register_blueprint(
     )
 )
 
-@app.route("/attendance")
-def attendance():
-    return flask.render_template("ui/attendance.html.jinja")
-
-@app.route("/QR")
-def qr():
-    return flask.render_template("Qr2.html")
-
-@app.route("/register")
-def register():
-    return flask.render_template("ui/register.html.jinja")
-
 @app.route("/")
 def index():
-    # if flask.request.args.get('generate', None) is not None:
-    #     qrpath = utils.qrcode.generate_qr("static/qr1.png", "https://github.com")
-    # else:
-    #     qrpath = None
     user = auth.current_user() or flask.g.user
-    print(user)
-    print()
     if user:
-        return flask.render_template(
-            "ui/home_existing_user.html.jinja",
-            current_user=user,
-            user=database.get_user_by_id(user['ID'])
-        )
+        return flask.redirect(flask.url_for("routes.users.current_user"))
     else:
-        return flask.render_template("ui/home_new_user.html.jinja", current_user=user)
+        return flask.render_template(
+            "ui/home_new_user.html.jinja",
+            current_user=user
+        )

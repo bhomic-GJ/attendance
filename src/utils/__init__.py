@@ -9,12 +9,6 @@ import flask
 import bcrypt
 import isodate
 
-from . import qrcode
-from . import database
-
-__version__ = "1.0"
-__all__     = [ "qrcode", "database" ]
-
 def modify_date(date, *args, **kwargs):
     return date + datetime.timedelta(*args, **kwargs)
 
@@ -27,11 +21,14 @@ def parse_date(datestr):
         return isodate.parse_datetime(datestr)
     except isodate.ISO8601Error:
         return datetime.datetime.combine(
-            isodate.parse_date(datestr), datetime.time.min()
+            isodate.parse_date(datestr), datetime.time.min
         )
 
 def parse_time(timestr):
     return isodate.parse_time(timestr)
+
+def current_time():
+    return datetime.datetime.now().time()
 
 class CodeGenerator:
     """ Defines an abstraction that generates assured unique codes
@@ -110,3 +107,9 @@ def get_field(request, key, allow_null=False):
             if allow_null: return None
             flask.abort(400, description=f"Missing {key} field in the request")
     return value
+
+from . import qrcode
+from . import database
+
+__version__ = "1.0"
+__all__     = [ "qrcode", "database" ]

@@ -75,7 +75,7 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
             database.set_user_role(user['ID'], 'non-admin')
         database.remove_user_associations(user['ID'])
         database.update_user(user['ID'], { 'OID': result.OID })
-        return flask.redirect("routes.users.current_user"), 200
+        return flask.redirect(flask.url_for("routes.users.current_user")), 200
 
     @blueprint.route("/edit")
     @login_required(auth)

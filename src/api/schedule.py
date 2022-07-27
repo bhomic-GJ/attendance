@@ -20,18 +20,21 @@ def create_blueprint(auth, tokens, database, *args, **kwargs):
     @blueprint.route("/create", methods=[ "POST" ])
     @auth.login_required(role='admin')
     def create_schedule():
-        start_date = isodate.parse_datetime(utils.get_field(flask.request, 'start_date'))
+        user = auth.current_user() or flask.g.user
+        user_data = database.get_user_by_id(user['ID'])
+        start_date = utils.parse_date(utils.get_field(flask.request, 'start_date'))
 
         if start_date < datetime.datetime.now():
             flask.abort(400, description="Invalid schedule commencement date")
 
         params = {
             'GName'            : utils.get_field(flask.request, 'group'),
-            'OID'              : utils.get_field(flask.request, 'organization'),
-            'Creator'          : auth.current_user()['ID'],
-            'Start_Time'       : isodate.parse_time(utils.get_field(flask.request, 'start_time')),
-            'End_Time'         : isodate.parse_time(utils.get_field(flask.request, 'end_time')),
+            'Creator'          : user['ID'],
+            'OID': user_data.OID,
+            'Start_Time'       : utils.parse_time(utils.get_field(flask.request, 'start_time')),
+            'End_Time'         : utils.parse_time(utils.get_field(flask.request, 'end_time')),
             'Commencement_Date': start_date,
+            'Title'            : utils.get_field(flask.request, 'title', allow_null=True) or '',
             'Status'           : utils.get_field(flask.request, 'status') or 0,
             'Frequency'        : utils.get_field(flask.request, 'frequency') or 1
         }
@@ -44,17 +47,17 @@ def create_blueprint(auth, tokens, database, *args, **kwargs):
             'data': params
         }), 200
 
-    @blueprint.route("/activate", methods='POST')
+    @blueprint.route("/activate", methods=['POST'])
     @auth.login_required(role='admin')
     def activate_schedule():
         pass
 
-    @blueprint.route("/attend", methods='POST')
+    @blueprint.route("/attend", methods=['POST'])
     @auth.login_required()
     def mark_attendance():
         pass
 
-    @blueprint.route("/view", methods='POST')
+    @blueprint.route("/view", methods=['POST'])
     def get_schedules():
         pass
 
