@@ -1,281 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title></title>
+    <head>
+        <title></title>
 
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<style>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend.css') }}">
 
-*{
-	margin: 0px;
-	padding: 0px;
-	box-sizing: border-box;
-	font-family: sans-serif;
-}
+    </head>
+    <body>
 
-
-.calender input[type="date"]{
-    background: transparent;
-   	color: #fff;
-}
-
-#cal{
-	outline: none;
-	border:none;
-	font-size: 1.5em;
-}
-
-.main{
-	background-color: #03bbff;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: space-around;
-	padding-top: 1rem;
-}
-
-.calender{
-    background: #ffffff55;
-    border-radius: 0.4rem;
-    padding: 0.5rem 1.6rem;
-
-}
-
-.events{
-
-	padding: 1rem;
-
-	background: #ffffff55;
-	border-radius: 10px;
-	color:#fff;
-	margin: 0.5rem;
-		margin-top: 2rem;
-}
-
-.eventcontainer{
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-}
+        <div class="main">
+            <div class="calender">
+                <input type="date" id="cal" onchange="calhandler(event);"/>
+            </div>
 
 
-.event{
-	padding: 1rem;
-	margin: 1rem;
-	background-color: #ffffff55;
-	color: #111;
-	border-radius: 10px;
-	width: 40%;
-	min-width: 120px;
-	max-width: 200px;
-	min-height: 60px;
-	transition: all 0.3s;
-	display: grid;
-	place-items: center;
-	cursor: pointer;
-	word-break:break-all;
-}
+            <div class="events">
+                <div class="eheading">Events</div>
 
-.event:hover{
-	transform: scale(1.1);
-	box-shadow: 5px 5px 10px #00000011;
-}
+                <div class="eventcontainer">
+                    <div class="event">Event 1</div>
+                </div>
+            </div>
 
-.eheading{
-	padding: 0.8rem;
-	font-size: 2em;
-	text-align: center;
-}
+            <div class="donutdiv">
+                <div class="donutheading">
+                    Donut
+                </div>
 
-.donutdiv{
-	width: 90%;
-	max-width: 800px;
-	padding: 1rem;
+                <div class="donutcontainer">
+                    <canvas id="PA_chart" aria-label="chart" role="img" height="200" width="200"></canvas>
+                </div>
+            </div>
 
-	background: #ffffff;
-	border-radius: 10px;
-	color:#fff;
-	margin: 0.5rem;
-	margin-top: 2rem;	
-}
+        </div>
+        <script src="{{ url_for('static', filename='scripts/attendance-non-admin.js') }}"></script>
 
-.donutheading{
-	padding: 0.8rem;
-	font-size: 2em;
-	text-align: center;
-	color:#111;
-	border-bottom: 4px solid #11111177;
-}
-
-
-.donutcontainer{
-	color: #03bbff;
-	margin-top: 1rem;
-}
-
-</style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
-
-</head>
-<body>
-
-<div class="main">
-<div class="calender">
-<input type="date" id="cal" onchange="calhandler(event);"/>
-</div>
-
-
-<div class="events">
-	<div class="eheading">Events</div>
-
-	<div class="eventcontainer">
-		<div class="event">Event 1</div>
-	</div>
-</div>
-
-<div class="donutdiv">
-	<div class="donutheading">
-		Donut	
-	</div>
-
-	<div class="donutcontainer">
-		<canvas id="PA_chart"  aria-label="chart" role="img" height="200" width="200"></canvas>
-	</div>
-</div>
-
-</div>
-<script>
-    var date=new Date();
-    var year=date.getFullYear();
-    var month=String(date.getMonth()+1).padStart(2,'0');
-    var today_date=String(date.getDate()).padStart(2,'0');
-    var datePattern=year + '-' + month + '-' + today_date;
-    document.getElementById("cal").value=datePattern;
-
-
-
-let eventcontainer =  document.querySelector('.eventcontainer');
-
-function eventobj(id, name, date, att){
-	this.text = name;
-	this.div = document.createElement("div");
-	this.div.classList = "event";
-	this.div.innerHTML = this.text;
-	this.div.id = id;
-	this.date = date;
-	this.div.date = this.date;
-	this.att = att;
-	this.div.att = this.att;
-
-	eventcontainer.appendChild(this.div);
-	this.div.onclick = function(){
-		//alert(this.id);
-		populateChart(this.id, this.date, this.att);
-	}
-}
-
-let dateObj = {
-	'2022-07-26' : [{'id':0, 'name':'Event0', 'attendance':[44, 20]}, {'id':1, 'name':'Event1', 'attendance':[54, 10]}, {'id':2, 'name':'Event2', 'attendance':[44, 50]}, {'id':3, 'name':'Event3', 'attendance':[20, 20]}],
-	'2022-07-27' : [{'id':0, 'name':'Event0', 'attendance':[77, 20]}, {'id':1, 'name':'Event1', 'attendance':[33, 20]}, {'id':2, 'name':'Event2', 'attendance':[77, 10]}],
-};
-
-let eheading = document.querySelector('.eheading');
-
-function calhandler(e){
-  let date = e.target.value;
-  eheading.innerHTML = "Event ("+date+")";
-
-  let eventarr = null;
-  for(let dt in dateObj){
-  	if(dt == date){
-  		eventarr = dateObj[dt];
-  	}
-  }
-  populateEventArr(eventarr, date);
-}
-
-
-let savedeventarr = [];
-
-function populateEventArr(eventarr, date){
-	eventcontainer.innerHTML = "";
-	savedeventarr = [];
-	
-	if(eventarr == null){
-		eventcontainer.innerHTML = "No Events Found";
-	}
-	else
-	{
-		for(let i = 0; i < eventarr.length; i++){
-			let e = eventarr[i];
-			let id = e['id'];
-			let name = e['name'];
-			let att = e['attendance'];
-
-			let ev = eventobj(id, name, date, att);
-			savedeventarr.push(ev);
-		}
-	}
-}
-
-</script>
-
-<script>
-
-let ctx = document.getElementById("PA_chart").getContext("2d");
-
-let PA_chart = null;
-
-let donutcontainer = document.querySelector('.donutcontainer');
-let donutheading = document.querySelector('.donutheading');
-
-function populateChart(eventid, date, att){
-
-	donutheading.innerHTML = ""+date+" : "+eventid;
-
-	let attarr = att;
-
-	//alert("eventid : "+eventid+ " attarr : "+attarr);
-
-	if(attarr == undefined){
-		PA_chart.destroy();
-		donutcontainer.innerHTML = "No Records Found";
-	}
-	else
-	{	
-		if(PA_chart != null){
-			PA_chart.destroy();
-		}
-		PA_chart=new Chart(ctx,{
-		type: "doughnut",
-		data: {
-		    labels: ["Present", "Absent"],
-		    datasets: [{
-		    backgroundColor: ["#2b5797", "#b91d47"],
-		    data: attarr,
-		    }]
-		},
-		options: {
-		    responsive: true,
-		    layout : {
-		        padding:{
-		            left: 0,
-		            right: 0,
-		            top: 0,
-		            bottom: 0,
-		        },
-		    },
-		},
-		});	
-	}
-}
-
-</script>
-
-</body>
+    </body>
 </html>

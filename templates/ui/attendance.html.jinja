@@ -1,12 +1,9 @@
 {% extends "base.html.jinja" %}
 
-{% block sub_main %}
-
-{% if current_user.role == 'admin' %}
-    {% block scripts_block %}
-        <script src="{{ url_for('static', filename='scripts/attendance-admin.js') }}"></script>
-    {% endblock scripts_block %}
-{% else %}
-{% endif %}
-
-{% endblock sub_main %}
+{% block main %}
+    {% if current_user.role == 'admin' %}
+        {% include "impl/attendance-admin.html.jinja" %}
+    {% else %}
+        {% include "impl/attendance-non-admin.html.jinja" %}
+    {% endif %}
+{% endblock main %}
