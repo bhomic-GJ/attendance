@@ -27,10 +27,10 @@ def login_required(http_auth, role=None):
         return decorated_function
     return login_required_wrapper
 
-from . import auth, users, organization, schedule
+from . import auth, users, organization, schedule, report
 
 __version__ = "1.0"
-__all__     = [ "users", "auth", "organization", "schedule" ]
+__all__     = [ "users", "auth", "organization", "schedule", "report" ]
 
 def create_blueprint(*args, **kwargs):
     blueprint = flask.Blueprint(
@@ -67,5 +67,8 @@ def create_blueprint(*args, **kwargs):
     )
     blueprint.register_blueprint(
         auth.create_blueprint(*args, **kwargs)
+    )
+    blueprint.register_blueprint(
+        report.create_blueprint(*args, **kwargs)
     )
     return blueprint
