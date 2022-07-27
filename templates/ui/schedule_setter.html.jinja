@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.sched.css') }}">
 {% endblock css_block %}
 
+
 {% block sub_main %}
 
 <div>
@@ -173,26 +174,61 @@
                         {
                             title: '{{ event.GName }} {{ event.Creator }}',
                             start: '2022-07-25T{{- event.Start_Time -}}:00',
-                            end: '2022-07-25T{{- event.End_Time -}}:00'
+                            end: '2022-07-25T{{- event.End_Time -}}:00',
                         },
                     {% endfor %}
                 ]
             {% endwith %}
-                {# events: [{
-                        title: 'event1',
-                        start: '2022-07-01'
-                    },
-                    {
-                        title: 'event2',
-                        start: '2022-07-06',
-                    },
-                    {
-                        title: 'event3',
-                        start: '2022-07-24T12:30:00',
-                        end: '2022-07-24T15:30:00',
-                        allDay: false // will make the time show
+                ,
+
+                eventClick: function(info) {
+                    //alert('Event: ' + info.event.title);
+                    //alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                    //alert('View: ' + info.view.type);
+
+                    // change the border color just for fun
+                    info.el.style.borderColor = 'red';
+
+                    //console.log('Event: ');
+                    //console.log(info.event.title);
+                    //console.log(info.event.start);
+                    //console.log(info.event.end);
+
+                    let payload = {
+                        'title': info.event.title,
+                        'start': info.event.start,
+                        'end': info.event.end
+                    };
+
+                    console.log(payload);
+
+                    let form = document.createElement('form');
+                    form.style.visibility = 'hidden'; 
+                    form.method = 'POST';
+
+
+                    if(current_role == 'admin'){
+                        form.action = 'index.html';
                     }
-                ] #}
+                    else
+                    if(current_role == 'non-admin'){
+                        form.action = '';
+                    }        
+
+                    
+                    for(let key in payload) {
+                        let input = document.createElement('input');
+                        input.name = key;
+                        input.value = payload[key];
+                        form.appendChild(input);
+                    }
+                    
+                    console.log(form);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+
             });
 
             calendar.render();
@@ -247,14 +283,8 @@
 });
     </script>
 
-    <style>
-.fc-today-button{
-    display: none;
-}
-</style>
 
+{% endblock sub_main %}
 
-    {% endblock sub_main %}
-
-    {% block scripts_block %}
-    {% endblock scripts_block %}
+{% block scripts_block %}
+{% endblock scripts_block %}
