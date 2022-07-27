@@ -36,13 +36,13 @@ const qrScanner = new QrScanner(
     }, {}
 );
 
-
+//shinchan changed
 let qrtoggle = 0;
 document.querySelector('#qrbtn').addEventListener('click', () => {
     qrtoggle = (qrtoggle + 1)%2;
     if(qrtoggle == 1){
         qrScanner.start();
-    }
+    }    
     else{
         qrScanner.stop();
     }
