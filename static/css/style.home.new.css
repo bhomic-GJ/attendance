@@ -1,0 +1,186 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.myhero {
+    background-color: #001220;
+    position: relative;
+    min-height: 100vh;
+}
+
+.wave {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+}
+
+.appname {
+    z-index: ;
+    position: absolute;
+    font-size: 7vw;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+    top: 25vh;
+    text-shadow: 0 0 10px #fff;
+    padding-bottom: 2rem;
+    animation: glow 3s linear infinite;
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 0px #fff;
+    }
+
+    50% {
+        text-shadow: 0 0 10px #fff;
+    }
+
+    100% {
+        text-shadow: 0 0 0px #fff;
+    }
+}
+
+@keyframes appanim {
+    0% {
+        opacity: 0.1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.1;
+    }
+}
+
+.opac {
+    animation: appanim 3s linear infinite;
+}
+
+.see-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff006600;
+    position: absolute;
+    width: 100%;
+    top: 60vh;
+}
+
+.go-down {
+    width: 30%;
+    z-index: 10;
+    -webkit-filter: invert(100%);
+    /* Safari/Chrome */
+    filter: invert(100%);
+    animation: downup 2s ease-in-out infinite;
+}
+
+@keyframes downup {
+    0% {
+        transform: translateY(-20%);
+    }
+
+
+    50% {
+        transform: translateY(20%);
+    }
+
+    100% {
+        transform: translateY(-20%);
+    }
+
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+}
+
+
+.bottom-page {
+    min-height: 100vh;
+    background-color: #001220;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.leftblock,
+.rightblock {
+    width: 45%;
+    background-color: #ffffff11;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    margin: 3rem;
+    border-radius: 10px;
+}
+
+
+@media (max-width: 900px) {
+    .bottom-page {
+        flex-direction: column;
+    }
+
+    .leftblock,
+    .rightblock {
+        width: 90%;
+    }
+}
+
+.about {
+    font-size: 3em;
+    color: #fff;
+}
+
+.tagline {
+    color: #fff;
+    margin-top: 1rem;
+}
+
+.rightblock {
+    padding: 0rem;
+    position: relative;
+    height: 100vh;
+}
+
+.regblock {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 0.3rem;
+}
+
+.fwhite {
+    color: #fff;
+}
+
+.bcontainer {
+    margin-bottom: 2rem;
+}
+
+.bt {
+    font-size: 2em;
+}
+
+.bst {
+    font-size: 1em;
+}

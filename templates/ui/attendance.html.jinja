@@ -1,29 +1,12 @@
 {% extends "base.html.jinja" %}
 
-{% block main %}
+{% block sub_main %}
 
-<div class='container'>
+{% if current_user.role == 'admin' %}
+    {% block scripts_block %}
+        <script src="{{ url_for('static', filename='scripts/attendance-admin.js') }}"></script>
+    {% endblock scripts_block %}
+{% else %}
+{% endif %}
 
-    <h1 class='title'>Generate QR Code</h1>
-
-    <form>
-        <div class="calender">
-            <input type="date" id="cal">
-        </div>
-
-        <div class="calender">
-            <input type="date" id="cal">
-        </div>
-        <div class="field">
-            <p class="control">
-                <button class="button">
-                    Submit
-                </button>
-            </p>
-        </div>
-    </form>
-
-
-
-</div>
-{% endblock main %}
+{% endblock sub_main %}

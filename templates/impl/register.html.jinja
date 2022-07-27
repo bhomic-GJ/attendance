@@ -14,13 +14,13 @@
     <div class="columns is-centered">
         <div class="column is-half">
             <div class='box'>
-                <form action="#">
+                <form action="{{ url_for('routes.auth.register') }}" method="POST">
                     {# name #}
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control has-icons-left">
                             <input class="input" type="text" name='name'
-                                placeholder="Name" required>
+                                placeholder="Name" value="{{ Name or '' }}" required>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                             </span>
@@ -32,7 +32,7 @@
                         <label class="label">Username</label>
                         <div class="control has-icons-left">
                             <input class="input" type="text" placeholder="Username"
-                                name='username' required>
+                                name='username' value="{{ Username or '' }}" required>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                             </span>
@@ -44,7 +44,7 @@
                         <label class="label">Email</label>
                         <div class="control has-icons-left">
                             <input class="input" type="email" name='e-mail'
-                                placeholder="E-mail Address" value="" required>
+                                placeholder="E-mail Address" value="{{ Email or '' }}" required>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
@@ -56,7 +56,7 @@
                         <label class="label">Password</label>
                         <div class="control has-icons-left">
                             <input class="input" type="password"
-                                placeholder="Password" required>
+                                placeholder="Password" name="password" required>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-key"></i>
                             </span>

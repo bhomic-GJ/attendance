@@ -1,0 +1,54 @@
+{% extends "base.html.jinja" %}
+
+{% block sub_main %}
+<div class="scheduleform">
+    <article class="container bcontainer">
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <p class="title fwhite bt">
+                        Create a new Group
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <div class='box'>
+                    <form action="#">
+
+
+                        <div class="field">
+                            <label class="label">Group Name</label>
+                            <div class="control">
+                                <input class="input" type="text" name='gname' placeholder="Group Name" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Parent</label>
+                            <div class="control">
+                                <div class="select is-fullwidth">
+                                    <select>
+                                        <option>Parent 1</option>
+                                        <option>Parent 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control">
+                            <button class="button is-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <div>
+
+    </div>
+</div>
+
+{% endblock sub_main %}
