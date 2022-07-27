@@ -7,6 +7,7 @@
 {% block sub_main %}
 
 <div>
+    <link rel="stylesheet" href= "https://raw.githubusercontent.com/alakise/bulma-floating-button/master/dist/css/bulma-floating-button.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css"
         integrity="sha256-jLWPhwkAHq1rpueZOKALBno3eKP3m4IMB131kGhAlRQ=" crossorigin="anonymous">
 
@@ -14,7 +15,119 @@
         integrity="sha256-XCdgoNaBjzkUaEJiauEq+85q/xi/2D4NcB3ZHwAapoM=" crossorigin="anonymous"></script>
 
 
-    <div id='calendar'></div>
+    <div class= 'columns mt-1' style = "padding:1rem">
+        <div class= 'column is-12'>
+            <div id='calendar'></div>
+        </div>
+
+        <div class= 'column is-0'>
+            <div id="modal-js-example" class="modal">
+            <div class="modal-background"></div>
+
+            <div class="modal-content">
+                <div class="box">
+                <div class="scheduleform">
+                        <article class="container bcontainer">
+                        <section class="hero">
+                        <div class="hero-body">
+                            <div class="container has-text-centered">
+                            <p class="title fwhite bt">
+                                Create a new Schedule
+                            </p>
+                            </div>
+                        </div>
+                        </section>
+                        <div class="columns is-centered">
+                            <div class="column">
+                            <div class='box'>
+                                <form action="#">
+
+                                <div class="field">
+                                    <label class="label">Group Name</label>
+                                    <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select>
+                                        <option>Group 1</option>
+                                        <option>Group 2</option>
+                                        </select>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Start Time</label>
+                                    <div class="control">
+                                    <input class="input" type="time" name='start_time' placeholder="Start Time" required>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="field">
+                                    <label class="label">End Time</label>
+                                    <div class="control">
+                                    <input class="input" type="time" name='end_time' placeholder="End Time" required>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="field">
+                                    <label class="label">Commencement Date</label>
+                                    <div class="control">
+                                    <input class="input" type="date" name='start_date' placeholder="Commencement Date" required>
+                                    </div>
+                                </div>
+
+
+                                <div class="field">
+                                    <label class="label">Title</label>
+                                    <div class="control">
+                                    <input class="input" type="text" name='title' placeholder="title">
+                                    </div>
+                                </div>
+
+
+
+                                <div class="field">
+                                    <label class="label">Status</label>
+                                    <div class="control">
+                                    <input class="input" type="text" name='status' placeholder="Status" required>
+                                    </div>
+                                </div>
+
+
+                                <div class="field">
+                                    <label class="label">Frequency</label>
+                                    <div class="control">
+                                    <input class="input" type="text" name='frequency' placeholder="Frequency" required>
+                                    </div>
+                                </div>
+
+                                <div class="control">
+                                    <button class="button is-primary">Submit</button>
+                                </div>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                        </article>
+
+                        <div>
+
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>
+             <a href="#" class="button is-floating is-primary">
+                <i class=" js-modal-trigger fas fa-plus" data-target="modal-js-example"></i>
+            </a>
+        </div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -86,6 +199,59 @@
 
         });
     </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  // Functions to open and close a modal
+  function openModal($el) {
+    $el.classList.add('is-active');
+  }
+
+  function closeModal($el) {
+    $el.classList.remove('is-active');
+  }
+
+  function closeAllModals() {
+    (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+      closeModal($modal);
+    });
+  }
+
+  // Add a click event on buttons to open a specific modal
+  (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+    const modal = $trigger.dataset.target;
+    const $target = document.getElementById(modal);
+
+    $trigger.addEventListener('click', () => {
+      openModal($target);
+    });
+  });
+
+  // Add a click event on various child elements to close the parent modal
+  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+    const $target = $close.closest('.modal');
+
+    $close.addEventListener('click', () => {
+      closeModal($target);
+    });
+  });
+
+  // Add a keyboard event to close all modals
+  document.addEventListener('keydown', (event) => {
+    const e = event || window.event;
+
+    if (e.keyCode === 27) { // Escape key
+      closeAllModals();
+    }
+  });
+});
+    </script>
+
+    <style>
+.fc-today-button{
+    display: none;
+}
+</style>
 
 
     {% endblock sub_main %}

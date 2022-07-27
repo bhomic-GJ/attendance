@@ -1,0 +1,53 @@
+{% extends "base.html.jinja" %}
+
+{% block sub_main %}
+<h2 class='title'>Report Panel</h2>
+
+<form action="" method="POST">
+    <div class='card mt-6'>
+        <div class='columns is-vcentered'>
+            <div class='column is-3'>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Start Date</label>
+                    </div>
+                    <div class="control">
+                        <input class="input" type="date" placeholder="Enter Start date" name='start_date' required>
+                    </div>
+                </div>
+            </div>
+
+            <div class='column is-3'>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">End Date</label>
+                    </div>
+                    <div class="control">
+                        <input class="input" type="date" placeholder="Enter End date" name='end_date' required>
+                    </div>
+                </div>
+            </div>
+
+            <div class=' column is-3'>
+                <div class="select is-rounded is-fullwidth">
+                    <select name="group" class="">
+                        {% for i in range(5): %}
+                        <option value="{{ loop.index }}"> Index {{ i | e}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class='column is-3'>
+                <div class="field is-grouped is-grouped-right">
+                    <div class="control">
+                        <button class="button is-primary is-fullwidth">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock sub_main %}
