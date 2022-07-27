@@ -1,18 +1,3 @@
-/*document.addEventListener('DOMContentLoaded', () => {
-    let socket = io();
-
-    socket.emit('SYN', "admin");
-    socket.on('SYN-ACK', () => {
-        // Init GUI
-    });
-    socket.on('count_update', info => {
-        console.log(info);
-    });
-
-    window.onunload = () => { socket.disconnect(true); }
-});*/
-
-
 let donutopen = 0;
 let donutdiv = document.querySelector('.donutdiv');
 
@@ -34,9 +19,9 @@ function populateChart(chart, { present = 0, absent = 0 } = {}) {
 document.addEventListener('DOMContentLoaded', () => {
     donutdiv = document.querySelector('.donutdiv');
     toggleDonut();
-    document.querySelector('.donutopener').onclick = function(){
+    document.querySelector('.donutopener').addEventListener('click', () => {
         toggleDonut();
-    };
+    });
 
     const ctx = document.getElementById("PA_chart").getContext("2d");
     const chart = new Chart(ctx, {

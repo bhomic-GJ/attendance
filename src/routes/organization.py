@@ -13,9 +13,15 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
 
     @blueprint.route("/<uuid:org_id>")
     def view(org_id):
+        edit_mode = False
+        admin = False
+
         current_user = auth.current_user() or flask.g.user
         if current_user:
+            user_data = database.get_user_by_id(current_user['ID'])
             current_user['role'] = database.get_user_role(current_user['ID'])
+            admin = current_user['role'] == 'admin'
+            edit_mode = admin and user_data['OID'] == str(org_id)
         organization = database.get_organization_by_id(org_id)
 
         hierarchy = database.get_member_hierarchy(org_id)
@@ -38,7 +44,9 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
             organization = organization,
             current_user = current_user,
             hierarchy = linear_hierarchy,
-            groups = database.get_groups_by_organization(org_id)
+            groups = database.get_groups_by_organization(org_id),
+            edit_mode=edit_mode,
+            admin=admin
         )
 
     @blueprint.route("/create", methods=[ 'POST' ])

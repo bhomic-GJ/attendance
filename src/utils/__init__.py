@@ -81,7 +81,7 @@ def verify_password(password, hashed_pw):
         by a previous call to `utils.hash_password` """
     password_hash = base64.b64decode(hashed_pw)
     return bcrypt.checkpw(password.encode(), password_hash)
-    
+
 def new_uuid():
     return str(uuid.uuid4())
 
@@ -95,12 +95,16 @@ def get_field(request, key, allow_null=False):
         allow_null (boolean): Only check for key presence, and not whether the value is usable.
     """
     try:
-        value = request.form[key]
+        form_params = request.form.to_dict(flat=False)
+        value = form_params[key]
+        if len(value) == 1: value = value[0]
         if not allow_null and not value:
             raise KeyError()
     except KeyError as exc:
         try:
-            value = request.args[key]
+            arg_params = request.args.to_dict(flat=False)
+            value = arg_params[key]
+            if len(value) == 1: value = value[0]
             if not allow_null and not value:
                 raise KeyError() from exc
         except KeyError:
