@@ -84,10 +84,11 @@ view() {
 # view "user" "where username = 'DEF'";
 # describe "attendance";
 
-view "ORGANIZATION";
-view 'schedule';
-describe 'active_schedule';
-describe 'attendance';
+# sql 'select ID, Name from USER';
+# view "ORGANIZATION";
+# view 'schedule';
+# describe 'active_schedule';
+# describe 'attendance';
 
 # sql "select * from SCHEDULE where mod(datediff('2022-08-03', Commencement_Date), Frequency) = 0"
 
