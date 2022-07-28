@@ -32,6 +32,7 @@ CREATE TABLE `ACTIVE_SCHEDULE` (
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
+  `Commencement_Date` datetime NOT NULL DEFAULT current_timestamp,
   `Token` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -57,6 +58,7 @@ CREATE TABLE `ATTENDANCE` (
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
+  `Commencement_Date` datetime NOT NULL DEFAULT current_timestamp,
   `Record_Time` datetime NOT NULL DEFAULT current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -124,7 +126,7 @@ CREATE TABLE `SCHEDULE` (
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `End_Time` time NOT NULL,
-  `Commencement_Date` datetime DEFAULT current_timestamp,
+  `Commencement_Date` datetime NOT NULL DEFAULT current_timestamp,
   `Title` varchar(200) DEFAULT NULL,
   `Status` int(11) NOT NULL,
   `Frequency` int(11) DEFAULT NULL
@@ -158,7 +160,7 @@ CREATE TABLE `USER` (
 -- Indexes for table `ACTIVE_SCHEDULE`
 --
 ALTER TABLE `ACTIVE_SCHEDULE`
-  ADD PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`);
+  ADD PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`);
 
 --
 -- Indexes for table `ADMIN`
@@ -170,7 +172,7 @@ ALTER TABLE `ADMIN`
 -- Indexes for table `ATTENDANCE`
 --
 ALTER TABLE `ATTENDANCE`
-  ADD PRIMARY KEY (`ID`,`Creator`,`GName`,`OID`,`Start_Time`),
+  ADD PRIMARY KEY (`ID`,`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
   ADD KEY `Creator` (`Creator`,`GName`,`OID`,`Start_Time`);
 
 --
@@ -207,7 +209,7 @@ ALTER TABLE `ORGANIZATION`
 -- Indexes for table `SCHEDULE`
 --
 ALTER TABLE `SCHEDULE`
-  ADD PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`),
+  ADD PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
   ADD KEY `GName` (`GName`,`OID`);
 
 --
@@ -226,7 +228,7 @@ ALTER TABLE `USER`
 -- Constraints for table `ACTIVE_SCHEDULE`
 --
 ALTER TABLE `ACTIVE_SCHEDULE`
-  ADD CONSTRAINT `active_schedule_ibfk_1` FOREIGN KEY (`Creator`,`GName`,`OID`,`Start_Time`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`);
+  ADD CONSTRAINT `active_schedule_ibfk_1` FOREIGN KEY (`Creator`,`GName`,`OID`,`Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`);
 
 --
 -- Constraints for table `ADMIN`
@@ -240,7 +242,7 @@ ALTER TABLE `ADMIN`
 ALTER TABLE `ATTENDANCE`
   ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `USER` (`ID`),
   ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`Creator`) REFERENCES `USER` (`ID`),
-  ADD CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`Creator`,`GName`,`OID`,`Start_Time`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`);
+  ADD CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`,`Commencement_Date`);
 
 --
 -- Constraints for table `GROUP`

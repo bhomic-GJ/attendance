@@ -27,9 +27,10 @@ CREATE TABLE `ACTIVE_SCHEDULE` (
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
+  `Commencement_Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Token` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`),
-  CONSTRAINT `active_schedule_ibfk_1` FOREIGN KEY (`Creator`, `GName`, `OID`, `Start_Time`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`)
+  PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
+  CONSTRAINT `active_schedule_ibfk_1` FOREIGN KEY (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -63,6 +64,7 @@ CREATE TABLE `ADMIN` (
 LOCK TABLES `ADMIN` WRITE;
 /*!40000 ALTER TABLE `ADMIN` DISABLE KEYS */;
 INSERT INTO `ADMIN` VALUES ('f47da81f-f94a-4dcb-8fa6-ca61ccc736df');
+INSERT INTO `ADMIN` VALUES ('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a');
 /*!40000 ALTER TABLE `ADMIN` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,12 +81,13 @@ CREATE TABLE `ATTENDANCE` (
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
+  `Commencement_Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Record_Time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`,`Creator`,`GName`,`OID`,`Start_Time`),
+  PRIMARY KEY (`ID`,`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
   KEY `Creator` (`Creator`,`GName`,`OID`,`Start_Time`),
   CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `USER` (`ID`),
   CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`Creator`) REFERENCES `USER` (`ID`),
-  CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`Creator`, `GName`, `OID`, `Start_Time`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`)
+  CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -226,11 +229,11 @@ CREATE TABLE `SCHEDULE` (
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `End_Time` time NOT NULL,
-  `Commencement_Date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `Commencement_Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Title` varchar(200) DEFAULT NULL,
   `Status` int NOT NULL,
   `Frequency` int DEFAULT NULL,
-  PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`),
+  PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
   KEY `GName` (`GName`,`OID`),
   CONSTRAINT `schedule_ibfk_1` FOREIGN KEY (`Creator`) REFERENCES `USER` (`ID`),
   CONSTRAINT `schedule_ibfk_2` FOREIGN KEY (`GName`, `OID`) REFERENCES `GROUP` (`Name`, `OID`)
