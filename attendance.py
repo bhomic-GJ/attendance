@@ -30,6 +30,7 @@ auth     = HTTPTokenAuth(scheme='Bearer')
 Session(app)
 
 tokens   = {}
+admins   = {}
 
 engine   = db.create_engine(app.config['SQLALCHEMY_DATABASE_URI'], { 'echo': False })
 database = utils.database.get_instance(engine)
@@ -69,7 +70,8 @@ app.register_blueprint(
     routes.create_blueprint(
         auth, tokens, database,
         socketio=socketio,
-        org_codes=org_codes
+        org_codes=org_codes,
+        admins=admins,
     )
 )
 # Register the API endpoint.
@@ -78,6 +80,7 @@ app.register_blueprint(
         auth, tokens, database,
         socketio=socketio,
         org_codes=org_codes,
+        admins=admins,
     )
 )
 
