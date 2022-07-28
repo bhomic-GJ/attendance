@@ -5,21 +5,21 @@
 {% endblock title %}
 
 {% block sub_main %}
-<div class="block mt-6">
+<div class="block mt-4 mb-6">
     <p class="title">Organization Details</p>
     <div class="box">
         {% include "impl/components/organization.html.jinja" %}
     </div>
 </div>
 
-<div class="block">
+<div class="block my-4">
     <h1 class="title">Organization Hierarchy</h1>
     <div class='columns'>
         <div class='column is-offset-10 is-2'>
-            <div class="field is-grouped is-grouped-right">
-                <p class="control">
-                    <input class="button is-primary is-outlined" type="submit" value="Add Group">
-                </p>
+            <div class='field is-grouped is-grouped-right'>
+                <div class='control'>
+                    <a class="button is-primary is-outlined" title="Add Group" href="{{ url_for('routes.group.create') }}">Add Group</a>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
             <table class="table is-fullwidth is-striped is-hoverable">
                 <thead>
                     <tr>
-                        <th>S. No. {{ edit_mode }} {{ admin }}</th>
+                        <th>S. No.</th>
                         <th>Name</th>
                         <th>E-Mail Address</th>
                         <th>Contact</th>
@@ -89,8 +89,8 @@
                             <th>
                                 <div class="field">
                                     <input class="is-checkradio select_all_members"
-                                        id="select_all_in_{{ group.Name or '__root__' }}" type="checkbox">
-                                    <label for="select_all_in_{{ group.Name or '__root__' }}"></label>
+                                        id="select_all_in_{{ group.name or '__root__' }}" type="checkbox">
+                                    <label for="select_all_in_{{ group.name or '__root__' }}"></label>
                                 </div>
                             </th>
                         {% endif %}
@@ -119,16 +119,16 @@
                         {% if edit_mode %}
                             <td>
                                 <div class="field">
-                                    <input id="switchColorDefault{{ group.Name or '__root__' }}{{loop.index}}" type="checkbox"
+                                    <input id="switchColorDefault{{ group.name or '__root__' }}{{loop.index}}" type="checkbox"
                                         class="switch" {{ 'checked' if member.Role == 'admin' else '' }}>
-                                    <label for="switchColorDefault{{ group.Name or '__root__' }}{{loop.index}}"></label>
+                                    <label for="switchColorDefault{{ group.name or '__root__' }}{{loop.index}}"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input class="is-checkradio" id="exampleCheckbox{{ group.Name or '__root__' }}{{loop.index}}"
+                                    <input class="is-checkradio" id="checkbox{{ group.name or '__root__' }}{{loop.index}}"
                                         type="checkbox" name="user_ids" value="{{ member.ID }}">
-                                    <label for="exampleCheckbox{{ group.Name or '__root__' }}{{loop.index}}"></label>
+                                    <label for="checkbox{{ group.name or '__root__' }}{{loop.index}}"></label>
                                 </div>
                             </td>
                         {% endif %}
