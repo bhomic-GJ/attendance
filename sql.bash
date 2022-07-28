@@ -93,9 +93,12 @@ view() {
 rm -rf static/assets/qr/*
 rm -rf flask_session/*
 sql "delete from ACTIVE_SCHEDULE";
-sql "delete from ATTENDANCE";
+# sql "delete from ATTENDANCE";
+# describe 'organization';
 # describe 'active_schedule';
 # describe 'attendance';
+# view 'attendance';
+view 'active_schedule';
 
 # sql "select * from SCHEDULE where mod(datediff('2022-08-03', Commencement_Date), Frequency) = 0"
 
@@ -103,3 +106,24 @@ sql "delete from ATTENDANCE";
 # curl "http://localhost:5000/api/schedule/create" -d "group=A&start_time=09:00:00&end_time=11:00:00&start_date=2022-07-27&title=EV1&status=1&frequency=7" -H "Authorization: Bearer dXNlcjE65Tq3cJPVQU2XUjIrt41rmjojWkXYDLQR7btYRrPRrRwy3S8WjjDGMotJow"
 
 # sql "UPDATE USER SET OID='61c8d38d-2c9e-4197-998e-0ef01eb3488c', OJoin_Date=NOW() WHERE Username='DEF'"
+
+# sql "select ID, Name from USER";
+# sql "select * from MEMBERSHIP";
+# sql "select * from GROUP_HIERARCHY";
+# sql "select ID, GName, OID from ATTENDANCE";
+# sql "WITH present_user (ID, GName, OID) as
+# (Select ATTENDANCE.id, ATTENDANCE.Gname, ATTENDANCE.OID
+# from ATTENDANCE, SCHEDULE
+# where 
+# SCHEDULE.GName = ATTENDANCE.GName AND
+# SCHEDULE.OID = ATTENDANCE.OID AND
+# SCHEDULE.Start_Time = ATTENDANCE.Start_Time AND
+# SCHEDULE.Commencement_Date = ATTENDANCE.Commencement_Date AND
+# ATTENDANCE.GName = 'A' AND ATTENDANCE.OID = '61c8d38d-2c9e-4197-998e-0ef01eb3488c')
+# SELECT MEMBERSHIP.ID, IF (MEMBERSHIP.ID = present_user.ID, 'Present', 'Absent') FROM MEMBERSHIP NATURAL LEFT OUTER JOIN present_user
+# ";
+
+# Select MEMBERSHIP.ID, Case when MEMBERSHIP.ID = present_user.ID then 'Present' else 'Absent' END AS Attendance_Record FROM present_user, MEMBERSHIP
+# where
+# 	MEMBERSHIP.GName = present_user.GName AND
+# 	MEMBERSHIP.OID = present_user.OID

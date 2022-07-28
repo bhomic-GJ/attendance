@@ -36,6 +36,8 @@ def main():
 
     # pprint(db.get_schedule(user.OID, 'A', utils.parse_time('06:30:00.000Z'), utils.parse_date('2022-07-28')))
     # pprint(db.get_group_hierarchy(user.OID, 'A', flatten=True))
+    for row in db.get_attendance_record("61c8d38d-2c9e-4197-998e-0ef01eb3488c", "A", utils.parse_time('10:30:00'), utils.parse_date('2022-07-28'), utils.parse_date('2022-08-03')):
+        pprint({ **row })
     for row in db.get_schedules_for_user(user['ID'], utils.parse_date('2022-07-28')):
         pprint({ **row })
     # for row in db.get_schedules_for_user(user['ID'], utils.parse_date('2022-08-03')):
