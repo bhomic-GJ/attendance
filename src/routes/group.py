@@ -71,7 +71,7 @@ def create_blueprint(auth, tokens, database, *args, **kwargs):
             queries = [ ( database.group.insert(), params ) ]
             if parent:
                 gh_params = {
-                    'Name'  : params['name'],
+                    'Name'  : params['Name'],
                     'Parent': parent,
                     'OID'   : params['OID']
                 }
@@ -82,8 +82,9 @@ def create_blueprint(auth, tokens, database, *args, **kwargs):
             return flask.redirect(flask.url_for("routes.org.view", org_id=user_data['OID']))
         else:
             return flask.render_template(
-                "ui/group_page.html.jinja"
-                **params
+                "ui/group_page.html.jinja",
+                **params, current_user=user,
+                groups=database.get_groups_by_organization(params['OID'])
             )
 
     return blueprint

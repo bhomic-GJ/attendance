@@ -48,6 +48,9 @@ class CodeGenerator:
         self.__codes = codes or []
         self.__generator = gen_fx or self.__default_generator
 
+    def reseed(self, codes):
+        self.__codes = codes or []
+
     def generate(self, *args, **kwargs):
         """ Generates a unique code using the generator function. """
         while True:

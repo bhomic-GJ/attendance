@@ -62,7 +62,7 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
         }
 
         database.execute((database.organization.insert(), params))
-        database.remove_user_associations(user['ID'])
+        database.remove_user_associations_and_migrate(user['ID'])
         database.update_user(user['ID'], { 'OID': params['OID'] })
         if database.get_user_role(user['ID']) != 'admin':
             database.execute((database.admin.insert(), { 'ID': user['ID'] }))
@@ -79,38 +79,46 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
             flask.flash("Incorrect joining code. Specify the correct code to join.", category="danger")
         user = auth.current_user() or flask.g.user
         # Delete previous privileges
-        if database.get_user_role(user['ID']) == 'admin':
-            database.set_user_role(user['ID'], 'non-admin')
-        database.remove_user_associations(user['ID'])
-        database.update_user(user['ID'], { 'OID': result.OID })
+        database.remove_user_associations_and_migrate(user['ID'], result.OID)
         return flask.redirect(flask.url_for("routes.users.current_user")), 200
 
-    @blueprint.route("/edit")
+    @blueprint.route("/organization/renew_code", methods=[ 'POST' ])
+    @login_required(auth, role='admin')
+    def renew():
+        user = auth.current_user() or flask.g.user
+        user_data = database.get_user_by_id(user['ID'])
+        org_code = org_codes.generate()
+        database.execute((
+            database.organization.update()\
+                .where(database.organization.c.OID == user_data['OID'])\
+                .values(Code=org_code), {}
+        ))
+        org_codes.reseed(database.get_organization_codes())
+        return flask.redirect(flask.url_for("routes.org.view", org_id=user_data['OID']))
+
+    @blueprint.route("/edit", methods=[ "POST" ])
     @login_required(auth)
     def edit():
         current_user = auth.current_user() or flask.g.user
         user_data = database.get_user_by_id(current_user['ID'])
+        org_data  = database.get_organization_by_id(user_data['OID'])
         params = {
-            'Name'         : utils.get_field(flask.request, 'name'        , allow_null=True) or '',
-            'Username'     : utils.get_field(flask.request, 'username'    , allow_null=True) or '',
-            'Address'      : utils.get_field(flask.request, 'address'     , allow_null=True) or '',
-            'Contact'      : utils.get_field(flask.request, 'contact'     , allow_null=True) or 0,
-            'Email'        : utils.get_field(flask.request, 'e-mail'      , allow_null=True) or '',
-            'Designation'  : utils.get_field(flask.request, 'designation' , allow_null=True) or '',
+            'Name'   : utils.get_field(flask.request, 'name'   ),
+            'Website': utils.get_field(flask.request, 'website', allow_null=True) or '',
+            'Address': utils.get_field(flask.request, 'address', allow_null=True) or '',
         }
-        params = { param: params[param] for param in params if params[param] != user_data[param] }
+        params = { param: params[param] for param in params if params[param] != org_data[param] }
         if params:
             try:
-                if 'Username' in params and (not params['Username'] or database.get_user_by_ref(params['Username'])):
-                    flask.flash("Username must be a non-empty and unique value.", category="danger")
-                elif 'Email' in params and (not params['Email'] or database.get_user_by_ref(params['Email'])):
-                    flask.flash("E-mail address must be a non-empty and unique value.", category="danger")
-                else:
-                    database.update_user(current_user['ID'], params)
-                    flask.flash("User data updated successfully.", category="success")
+                database.execute(
+                    database.organization.update()\
+                        .where(database.organization.c.OID == user_data['OID'])\
+                        .values(**params)
+                )
+                flask.flash("Organization updated successfully.", category="success")
             except exc.SQLAlchemyError as exception:
                 print("SQL Exception:", exception)
                 flask.flash("An unknown error has occurred. Try again later.", category="danger")
-        return flask.redirect(flask.url_for("routes.users.current_user"))
+        return flask.redirect(flask.url_for("routes.org.view", org_id=user_data['OID']))
 
     return blueprint

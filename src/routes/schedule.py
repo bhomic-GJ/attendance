@@ -130,11 +130,6 @@ def create_blueprint(auth, tokens, database, socketio, admins, *args, **kwargs):
             "ui/attendance.html.jinja", current_user=user, qr_url=qr_url
         )
 
-    # @socketio.on('connect')
-    # def init_connection():
-    #     user = auth.current_user() or flask.g.get('user', None)
-    #     if user: admins[user['ID']] = flask.request.sid
-
     @socketio.on('SYN')
     def init_handshake(_):
         user = flask.session.get('user_token', None)
@@ -144,13 +139,13 @@ def create_blueprint(auth, tokens, database, socketio, admins, *args, **kwargs):
         if params:
             present_count = len(database.get_schedule_attendance(
                 params['OID'], params['GName'],
-                params['Start_Time'], params['Commencement_Date']
+                params['Start_Time'], params['Commencement_Date'],
+                utils.parse_date('').replace(tzinfo=None)
             ))
             flask_socketio.emit('SYN-ACK', {
                 'present': present_count,
                 'absent': len(database.get_schedule_members(
-                    params['OID'], params['GName'],
-                    params['Start_Time'], params['Commencement_Date']
+                    params['OID'], params['GName']
                 )) - present_count
             }, to=admins[user['ID']])
             return
@@ -172,6 +167,7 @@ def create_blueprint(auth, tokens, database, socketio, admins, *args, **kwargs):
     @login_required(auth)
     def mark_attendance():
         user = auth.current_user() or flask.g.user
+        user_data = database.get_user_by_id(user['ID'])
         params = {
             'ID'               : user['ID'],
             'OID'              : utils.get_field(flask.request, 'OID'),
@@ -180,7 +176,7 @@ def create_blueprint(auth, tokens, database, socketio, admins, *args, **kwargs):
             'Start_Time'       : utils.parse_time(utils.get_field(flask.request, 'Start_Time')),
             'Commencement_Date': utils.parse_date(utils.get_field(flask.request, 'Commencement_Date'))
         }
-        if user.OID != params['OID'] or params['GName'] not in database.get_user_groups(user['ID']):
+        if user_data['OID'] != params['OID'] or params['GName'] not in database.get_user_groups(user['ID']):
             flask.flash("Cannot mark attendance in non-member group schedules", category='danger')
             return flask.redirect(flask.url_for("routes.sched.home"))
         token = utils.get_field(flask.request, 'Token')
@@ -206,14 +202,14 @@ def create_blueprint(auth, tokens, database, socketio, admins, *args, **kwargs):
             flask.flash("Attendance marked successfully.", category='success')
             present_count = len(database.get_schedule_attendance(
                 params['OID'], params['GName'],
-                params['Start_Time'], params['Commencement_Date']
+                params['Start_Time'], params['Commencement_Date'],
+                utils.parse_date('').replace(tzinfo=None)
             ))
             if params['Creator'] in admins:
                 socketio.emit('count_update', {
                     'present': present_count,
                     'absent': len(database.get_schedule_members(
-                        params['OID'], params['GName'],
-                        params['Start_Time'], params['Commencement_Date']
+                        params['OID'], params['GName']
                     )) - present_count
                 }, room=admins[params['Creator']], to=admins[params['Creator']])
         else:
