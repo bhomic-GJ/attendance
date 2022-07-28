@@ -1,33 +1,45 @@
 import QrScanner from "./qr-scanner.min.js";
 
+let form;
+const FAILURE_MESSAGE = String.raw`
+There was an error while scanning the QR.
+Ensure that a valid QR generated for one of your organization's schedule is being scanned.
+`
+
 const qrScanner = new QrScanner(
     document.getElementById("videoElement"),
     result => {
         qrScanner.stop();
         console.log('decoded qr code:', result);
-
         try {
-            let data = JSON.parse(result);
-            console.log(data);
-            fetchData("/api/schedule/attend", {
-                method: 'POST',
-                body: { ...data },
-                credentials: 'same-origin'
-            })
-            .then(response => {
-                console.log(response);
-                if (!response.status)
-                    throw new Error(`HTTP ${response.code}: ${response.error}`);
-                // redirect
-                window.location.href = "/";
-            })
-            .catch(reason => {
-                console.error(reason);
-                qrScanner.start();
-            })
+            let data = JSON.parse(result.data);
+            if(data.Token) {
+                for(const property of Object.getOwnPropertyNames(data)) {
+                    form[property].value = data[property];
+                }
+                form.submit();
+            }
+            // fetchData("/api/schedule/attend", {
+            //     method: 'POST',
+            //     body: { ...data },
+            //     credentials: 'same-origin'
+            // })
+            // .then(response => {
+            //     console.log(response);
+            //     if (!response.status)
+            //         throw new Error(`HTTP ${response.code}: ${response.error}`);
+            //     // redirect
+            //     window.location.href = "/";
+            // })
+            // .catch(reason => {
+            //     console.error(reason);
+            //     qrScanner.start();
+            // })
 
         } catch (error) {
-
+            alert(FAILURE_MESSAGE);
+            alert(error);
+            qrScanner.start();
         }
     }, {}
 );
@@ -41,6 +53,10 @@ QrScanner.listCameras(true).then(devices => {
         document.querySelector('select#videoSource').appendChild(option);
     }
 }) // async; requesting camera labels, potentially asking the user for permission
+
+document.addEventListener('DOMContentLoaded', () => {
+    form = document.getElementById("detailsForm");
+});
 
 document.querySelector('select#videoSource').onchange = e => {
     qrScanner.setCamera(e.target.value);

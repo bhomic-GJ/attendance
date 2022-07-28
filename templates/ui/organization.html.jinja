@@ -1,7 +1,7 @@
 {% extends "base.html.jinja" %}
 
 {% block title %}
-    {{ organization.Name }} (Organization)
+{{ organization.Name }} (Organization)
 {% endblock title %}
 
 {% block sub_main %}
@@ -18,73 +18,132 @@
         <div class='column is-offset-10 is-2'>
             <div class='field is-grouped is-grouped-right'>
                 <div class='control'>
-                    <a class="button is-primary is-outlined" title="Add Group" href="{{ url_for('routes.group.create') }}">Add Group</a>
+                    <a class="js-modal-trigger button is-primary is-outlined" title="Add Group"
+                        data-target="modal-js-example">Add Group</a>
                 </div>
             </div>
+            {# <button class="is-primary is-outlined js-modal-trigger" data-target="modal-js-example">
+                Add Group
+            </button> #}
+            <div id="modal-js-example" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        {% include "ui/group_page.html.jinja" %}
+                    </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                // Functions to open and close a modal
+                function openModal($el) {
+                    $el.classList.add('is-active');
+                }
+
+                function closeModal($el) {
+                    $el.classList.remove('is-active');
+                }
+
+                function closeAllModals() {
+                    (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+                    closeModal($modal);
+                    });
+                }
+
+                // Add a click event on buttons to open a specific modal
+                (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+                    const modal = $trigger.dataset.target;
+                    const $target = document.getElementById(modal);
+
+                    $trigger.addEventListener('click', () => {
+                    openModal($target);
+                    });
+                });
+
+                // Add a click event on various child elements to close the parent modal
+                (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+                    const $target = $close.closest('.modal');
+
+                    $close.addEventListener('click', () => {
+                    closeModal($target);
+                    });
+                });
+
+                // Add a keyboard event to close all modals
+                document.addEventListener('keydown', (event) => {
+                    const e = event || window.event;
+
+                    if (e.keyCode === 27) { // Escape key
+                    closeAllModals();
+                    }
+                });
+                });
+            </script>
         </div>
     </div>
     {% for group in hierarchy %}
     <section class="box">
         {% if group.members %}
         <form action="{{ url_for('routes.group.move') }}" class="groupform" method="POST">
-        {% endif %}
-        <div class='columns'>
-            <div class='column'>
-                <div class="columns">
-                    <div class="column">
-                        <span class="title">Group {{ group.name or '<root>' | e }}</span>
-                    </div>
-                    <div class="column">
-                        <nav class="breadcrumb is-right has-succeeds-separator" aria-label="breadcrumbs">
-                            <ul>
-                                {% for name in group.path %}
-                                <li>
-                                    <a> {{ name }} </a>
-                                </li>
-                                {% endfor %}
+            {% endif %}
+            <div class='columns'>
+                <div class='column is-8'>
+                    <div class="columns">
+                        <div class="column">
+                            <span class="title">Group {{ group.name or '<root>' | e }}</span>
+                        </div>
+                        <div class="column">
+                            <nav class="breadcrumb is-right has-succeeds-separator" aria-label="breadcrumbs">
+                                <ul>
+                                    {% for name in group.path %}
+                                    <li>
+                                        <a> {{ name }} </a>
+                                    </li>
+                                    {% endfor %}
                                     {%- if group.name %}
-                                        <li class="is-active">
-                                            <a> {{ group.name }} </a>
-                                        </li>
+                                    <li class="is-active">
+                                        <a> {{ group.name }} </a>
+                                    </li>
                                     {% endif %}
-                                </li>
-                            </ul>
-                        </nav>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class='column'>
-                <div class="field has-addons is-hidden">
-                    <div class="control is-expanded">
-                        <div class="select is-fullwidth">
-                            <select name="group">
-                                {% for grp in hierarchy %}
+                <div class='column is-4'>
+                    <div class="field has-addons is-hidden">
+                        <div class="control is-expanded">
+                            <div class="select is-fullwidth">
+                                <select name="group">
+                                    {% for grp in hierarchy %}
                                     {% if grp.name != group.name %}
                                     <option value="{{ grp.name or '' }}"> Group {{ grp.name or '<root>' | e -}}
                                     </option>
                                     {% endif %}
-                                {% endfor %}
-                            </select>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input type="hidden" name="current_group" value="{{ group.name or '' }}">
                         </div>
-                        <input type="hidden" name="current_group" value="{{ group.name or '' }}">
+                        <p class="control">
+                            <input class="button is-primary is-outlined" type="submit" value="Move">
+                        </p>
                     </div>
-                    <p class="control">
-                        <input class="button is-primary is-outlined" type="submit" value="Move">
-                    </p>
                 </div>
             </div>
-        </div>
-        {% if group.members %}
-        <div class="table-container">
-            <table class="table is-fullwidth is-striped is-hoverable">
-                <thead>
-                    <tr>
-                        <th>S. No.</th>
-                        <th>Name</th>
-                        <th>E-Mail Address</th>
-                        <th>Contact</th>
-                        <th>Role</th>
-                        {% if edit_mode %}
+            {% if group.members %}
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Name</th>
+                            <th>E-Mail Address</th>
+                            <th>Contact</th>
+                            <th>Role</th>
+                            {% if edit_mode %}
                             <th>Toggle Role</th>
                             <th>
                                 <div class="field">
@@ -93,51 +152,58 @@
                                     <label for="select_all_in_{{ group.name or '__root__' }}"></label>
                                 </div>
                             </th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for member in group.members %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>
-                            <a href="{{- url_for('routes.users.user', user_id=member.ID) -}}">
-                                {{ member.Name }}
-                            </a>
-                        </td>
-                        <td>
-                            <a href="mailto:{{- member.Email or '' -}}">
-                                {{ member.Email or 'Unknown' }}
-                            </a>
-                        </td>
-                        <td>
-                            <a href="tel:{{- member.Contact or '' -}}">
-                                {{ member.Contact or 'Unknown' }}
-                            </a>
-                        </td>
-                        <td>{{ member.Role }}</td>
-                        {% if edit_mode %}
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in group.members %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <a href="{{- url_for('routes.users.user', user_id=member.ID) -}}">
+                                    {{ member.Name }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="mailto:{{- member.Email or '' -}}">
+                                    {{ member.Email or 'Unknown' }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="tel:{{- member.Contact or '' -}}">
+                                    {{ member.Contact or 'Unknown' }}
+                                </a>
+                            </td>
+                            <td>{{ member.Role }}</td>
+                            {% if edit_mode %}
                             <td>
                                 <div class="field">
-                                    <input id="switchColorDefault{{ group.name or '__root__' }}{{loop.index}}" type="checkbox"
-                                        class="switch" {{ 'checked' if member.Role == 'admin' else '' }}>
-                                    <label for="switchColorDefault{{ group.name or '__root__' }}{{loop.index}}"></label>
+                                    <input id="switchColorDefault{{ group.name or '__root__' }}{{loop.index}}"
+                                        form="changeRoleForm" type="checkbox" class="switch"
+                                        {{ 'checked' if member.Role == 'admin' else '' }}
+                                        value="{{ 'non-admin' if member.Role == 'admin' else 'admin' }}">
+                                    <label for="
+                                        switchColorDefault{{ group.name or '__root__' }}{{loop.index}}"></label>
                                 </div>
+                                <input form="changeRoleForm" type="hidden" name="u_id" value="{{ member.ID }}">
                             </td>
                             <td>
                                 <div class="field">
-                                    <input class="is-checkradio" id="checkbox{{ group.name or '__root__' }}{{loop.index}}"
-                                        type="checkbox" name="user_ids" value="{{ member.ID }}">
+                                    <input class="is-checkradio"
+                                        id="checkbox{{ group.name or '__root__' }}{{loop.index}}" type="checkbox"
+                                        name="user_ids" value="{{ member.ID }}">
                                     <label for="checkbox{{ group.name or '__root__' }}{{loop.index}}"></label>
                                 </div>
                             </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </form>
+        {# Dynamically binded form to send data. #}
+        <form id="changeRoleForm" action="{{ url_for('playground') }}" method="POST"></form>
         {% else %}
         <div class="notification is-info is-light">
             <p>This group does not have any exclusive members.</p>
@@ -145,9 +211,9 @@
         {% endif %}
     </section>
     {% endfor %}
-    </div>
+</div>
 {% endblock sub_main %}
 
 {% block scripts_block %}
-    <script src="{{ url_for('static', filename='scripts/organization.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/organization.js') }}"></script>
 {% endblock scripts_block %}

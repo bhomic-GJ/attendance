@@ -1,7 +1,10 @@
 {% extends "base.html.jinja" %}
 
-{% block main %}
-<article class="container">
+{%- block title %}
+    Log-In
+{% endblock title -%}
+
+{% block sub_main %}
     <section class="hero">
         <div class="hero-body">
             <div class="container has-text-centered">
@@ -12,7 +15,7 @@
         </div>
     </section>
     <div class="columns is-centered">
-        <div class="column is-one-third">
+        <div class="column is-one-third-desktop is-half-tablet">
             <div class='box'>
                 <form method="POST" action="{{ url_for('routes.auth.login') }}">
                     {# username #}
@@ -49,4 +52,4 @@
         </div>
     </div>
 </article>
-{% endblock main %}
+{% endblock sub_main %}

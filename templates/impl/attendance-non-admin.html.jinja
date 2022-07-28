@@ -1,30 +1,39 @@
 {% block css_block %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend-non-adm.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend-non-adm.css') }}">
 {% endblock css_block %}
 
 {% block scripts_block %}
-    <script src="{{ url_for('static', filename='scripts/attendance.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='scripts/qr-scanner.min.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='scripts/attendance-non-admin.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/attendance.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='scripts/qr-scanner.min.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='scripts/attendance-non-admin.js') }}"></script>
 {% endblock scripts_block %}
 
 {% block sub_main %}
-        <div class="container">
-            <div class="block">
-                <div class="cameracrop">
-                    <video autoplay="true" id="videoElement"></video>
+<div class="container">
+    <div class="block">
+        <div class="cameracrop">
+            <video autoplay="true" id="videoElement"></video>
+        </div>
+    </div>
+    <form id="detailsForm" action="{{ url_for('routes.sched.mark_attendance') }}" method="POST">
+        <input name="Creator" type="hidden">
+        <input name="OID" type="hidden">
+        <input name="GName" type="hidden">
+        <input name="Commencement_Date" type="hidden">
+        <input name="Start_Time" type="hidden">
+        <input name="Token" type="hidden">
+    </form>
+    <div class="block">
+        <div class='field has-addons'>
+            <p class='control is-expanded'>
+                <div class='select is-fullwidth'>
+                    <select id="videoSource"></select>
                 </div>
-            </div>
-            <div class="block">
-                <div class='field has-addons'>
-                    <p class='control is-expanded'>
-                        <div class='select is-fullwidth'>
-                            <select id="videoSource"></select>
-                        </div>
-                    </p>
-                    <p class='control'>
-                        <button class="button is-info" id="qrbtn">Scan QR</button>
-                    </p>
-                </div>
-
+            </p>
+            <p class='control'>
+                <button class="button is-info" id="qrbtn">Scan QR</button>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock sub_main %}

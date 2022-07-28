@@ -15,113 +15,19 @@
         <div class='column is-12'>
             <div id='calendar'></div>
         </div>
-        <div class='column is-0'>
-            <div id="modal-js-example" class="modal">
-                <div class="modal-background"></div>
-                <div class="modal-content">
-                    <div class="box">
-                        <div class="scheduleform">
-                            <article class="container bcontainer">
-                                <section class="hero">
-                                    <div class="hero-body">
-                                        <div class="container has-text-centered">
-                                            <p class="title fwhite bt">
-                                                Create a new Schedule
-                                            </p>
-                                        </div>
-                                    </div>
-                                </section>
-                                <div class="columns is-centered">
-                                    <div class="column">
-                                        <div class='box'>
-                                            <form action="#">
-
-                                                <div class="field">
-                                                    <label class="label">Group Name</label>
-                                                    <div class="control">
-                                                        <div class="select is-fullwidth">
-                                                            <select>
-                                                                <option>Group 1</option>
-                                                                <option>Group 2</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="field">
-                                                    <label class="label">Start Time</label>
-                                                    <div class="control">
-                                                        <input class="input" type="time" name='start_time'
-                                                            placeholder="Start Time" required>
-                                                    </div>
-                                                </div>
-
-
-
-                                                <div class="field">
-                                                    <label class="label">End Time</label>
-                                                    <div class="control">
-                                                        <input class="input" type="time" name='end_time'
-                                                            placeholder="End Time" required>
-                                                    </div>
-                                                </div>
-
-
-
-                                                <div class="field">
-                                                    <label class="label">Commencement Date</label>
-                                                    <div class="control">
-                                                        <input class="input" type="date" name='start_date'
-                                                            placeholder="Commencement Date" required>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="field">
-                                                    <label class="label">Title</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" name='title'
-                                                            placeholder="title">
-                                                    </div>
-                                                </div>
-
-
-
-                                                <div class="field">
-                                                    <label class="label">Status</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" name='status'
-                                                            placeholder="Status" required>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="field">
-                                                    <label class="label">Frequency</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" name='frequency'
-                                                            placeholder="Frequency" required>
-                                                    </div>
-                                                </div>
-
-                                                <div class="control">
-                                                    <button class="button is-primary">Submit</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <div>
-
-                            </div>
+        {% if current_user.role == 'admin' %}
+            <div class='column is-0'>
+                <div id="modal-js-example" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-content">
+                        <div class="box">
+                            {% include "impl/components/schedule.html.jinja" %}
                         </div>
                     </div>
+                    <button class="modal-close is-large" aria-label="close"></button>
                 </div>
-                <button class="modal-close is-large" aria-label="close"></button>
             </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock sub_main %}
 
@@ -129,14 +35,15 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"
         integrity="sha256-XCdgoNaBjzkUaEJiauEq+85q/xi/2D4NcB3ZHwAapoM=" crossorigin="anonymous"></script>
     <script>
+        const globalScheduleRoute = "{{ url_for('routes.sched.view') }}";
         const globalInitDate = "{{ dates[0] }}";
         const globalEvents = [
             {% for date in dates %}
                 {% for event in schedules[loop.index0] %}
                     {
-                        title: '{{event.Title}} - {{ event.GName }}\n{{ event.Creator }}',
-                        start: '{{ date }}T{{- event.Start_Time -}}',
-                        end: '{{ date }}T{{- event.End_Time -}}',
+                        title: '{{event.Title}} - {{ event.GName }} . {{ event.CreatorName }}',
+                        start: new Date('{{ date | field('%Y-%m-%d') }}T{{- event.Start_Time -}}+0000'),
+                        end: new Date('{{ date | field('%Y-%m-%d') }}T{{- event.End_Time -}}+0000'),
                     },
                 {% endfor %}
             {% endfor %}

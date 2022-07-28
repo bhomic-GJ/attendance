@@ -48,22 +48,20 @@ document.addEventListener('DOMContentLoaded', function () {
             start_date = new Date(Date.parse(view.view.currentStart));
             start_date.setDate(start_date.getDate() - 7);
             end_date = new Date(Date.parse(view.view.currentEnd));
-            if(!window.location.href.includes('start_date'))
-                reloadPage(new Date(Date.parse(view.view.currentStart)));
         },
         events: globalEvents,
         eventClick: info => {
-            let gname = info.event.title.split('\n')[0].split(' - ')[1];
+            let group = info.event.title.split(' . ')[0].split(' - ')[1];
+            let [ start_date, start_time ] = new Date(info.event.startStr).toISOString().split('T', 2);
             let payload = {
-                'group': gname,
-                'start': info.event.startStr,
-                'end': info.event.endStr
+                group, start_date, start_time,
+                end_time: new Date(info.event.endStr).toISOString().split('T')[1]
             };
 
             let form = document.createElement('form');
             form.style.visibility = 'hidden';
             form.method = 'POST';
-            form.action = '/playground';
+            form.action = globalScheduleRoute;
 
             for(let key of Object.getOwnPropertyNames(payload)) {
                 let input = document.createElement('input');
