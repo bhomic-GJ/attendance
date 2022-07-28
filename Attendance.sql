@@ -23,14 +23,13 @@ DROP TABLE IF EXISTS `ACTIVE_SCHEDULE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACTIVE_SCHEDULE` (
-  `Creator` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
-  `Commencement_Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Commencement_Date` date NOT NULL,
   `Token` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
-  CONSTRAINT `active_schedule_ibfk_1` FOREIGN KEY (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`)
+  PRIMARY KEY (`GName`,`OID`,`Start_Time`,`Commencement_Date`),
+  CONSTRAINT `active_schedule_ibfk_1` FOREIGN KEY (`GName`, `OID`, `Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`GName`, `OID`, `Start_Time`, `Commencement_Date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -63,8 +62,7 @@ CREATE TABLE `ADMIN` (
 
 LOCK TABLES `ADMIN` WRITE;
 /*!40000 ALTER TABLE `ADMIN` DISABLE KEYS */;
-INSERT INTO `ADMIN` VALUES ('f47da81f-f94a-4dcb-8fa6-ca61ccc736df');
-INSERT INTO `ADMIN` VALUES ('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a');
+INSERT INTO `ADMIN` VALUES ('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a'),('b266f145-4df4-4fc8-81b1-a838c46a3b6d'),('ca520502-e2c0-439c-9b7f-3829e8ac050e'),('f47da81f-f94a-4dcb-8fa6-ca61ccc736df');
 /*!40000 ALTER TABLE `ADMIN` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,17 +75,15 @@ DROP TABLE IF EXISTS `ATTENDANCE`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ATTENDANCE` (
   `ID` varchar(36) NOT NULL,
-  `Creator` varchar(36) NOT NULL,
   `GName` varchar(200) NOT NULL,
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
-  `Commencement_Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Commencement_Date` date NOT NULL,
   `Record_Time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`,`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
-  KEY `Creator` (`Creator`,`GName`,`OID`,`Start_Time`),
+  PRIMARY KEY (`ID`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
+  KEY `attendance_ibfk_3` (`GName`,`OID`,`Start_Time`,`Commencement_Date`),
   CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `USER` (`ID`),
-  CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`Creator`) REFERENCES `USER` (`ID`),
-  CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`Creator`, `GName`, `OID`, `Start_Time`, `Commencement_Date`)
+  CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`GName`, `OID`, `Start_Time`, `Commencement_Date`) REFERENCES `SCHEDULE` (`GName`, `OID`, `Start_Time`, `Commencement_Date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -97,6 +93,7 @@ CREATE TABLE `ATTENDANCE` (
 
 LOCK TABLES `ATTENDANCE` WRITE;
 /*!40000 ALTER TABLE `ATTENDANCE` DISABLE KEYS */;
+INSERT INTO `ATTENDANCE` VALUES ('b5dd7c1d-74af-4323-a25f-579202ef22a3','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','10:30:00','2022-07-28','2022-07-28 13:22:41'),('f39bae3b-dfd9-434c-a13a-700245c9d990','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','10:30:00','2022-07-28','2022-07-28 13:23:19');
 /*!40000 ALTER TABLE `ATTENDANCE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -185,6 +182,7 @@ CREATE TABLE `MEMBERSHIP` (
 
 LOCK TABLES `MEMBERSHIP` WRITE;
 /*!40000 ALTER TABLE `MEMBERSHIP` DISABLE KEYS */;
+INSERT INTO `MEMBERSHIP` VALUES ('67107310-30bb-4f13-a9f0-dd2c1ea9bf0a','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-28 07:04:44'),('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-28 07:04:44'),('b5dd7c1d-74af-4323-a25f-579202ef22a3','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-28 07:04:44'),('db7e8277-cf83-485e-8651-d614b269b95c','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-28 07:04:44'),('f39bae3b-dfd9-434c-a13a-700245c9d990','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-28 07:04:44');
 /*!40000 ALTER TABLE `MEMBERSHIP` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -212,7 +210,7 @@ CREATE TABLE `ORGANIZATION` (
 
 LOCK TABLES `ORGANIZATION` WRITE;
 /*!40000 ALTER TABLE `ORGANIZATION` DISABLE KEYS */;
-INSERT INTO `ORGANIZATION` VALUES ('493c89a9-e1be-497c-8fd0-e2fbdc1ffbba','University of Delhi',NULL,NULL,'M1DDZG'),('61c8d38d-2c9e-4197-998e-0ef01eb3488c','GitHub','','https://github.com','MIK97U'),('ddbe2a38-075a-11ed-806a-3221e19b7403','TempOrg',NULL,NULL,'ABCDEF');
+INSERT INTO `ORGANIZATION` VALUES ('37eae6c0-b2dd-4b8b-9ccf-de780a844337','AttendanceTester',NULL,NULL,'FKBMFA'),('493c89a9-e1be-497c-8fd0-e2fbdc1ffbba','University of Delhi',NULL,NULL,'M1DDZG'),('61c8d38d-2c9e-4197-998e-0ef01eb3488c','GitHub','','https://github.com','MIK97U'),('c8c9c7c2-e4d6-44b3-8d63-11b06e2aba1b','qftics.org',NULL,NULL,'UZFQNX'),('ddbe2a38-075a-11ed-806a-3221e19b7403','TempOrg',NULL,NULL,'ABCDEF');
 /*!40000 ALTER TABLE `ORGANIZATION` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,12 +227,13 @@ CREATE TABLE `SCHEDULE` (
   `OID` varchar(36) NOT NULL,
   `Start_Time` time NOT NULL,
   `End_Time` time NOT NULL,
-  `Commencement_Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Commencement_Date` date NOT NULL,
   `Title` varchar(200) DEFAULT NULL,
   `Status` int NOT NULL,
   `Frequency` int DEFAULT NULL,
-  PRIMARY KEY (`Creator`,`GName`,`OID`,`Start_Time`,`Commencement_Date`),
+  PRIMARY KEY (`GName`,`OID`,`Start_Time`,`Commencement_Date`),
   KEY `GName` (`GName`,`OID`),
+  KEY `schedule_ibfk_1` (`Creator`),
   CONSTRAINT `schedule_ibfk_1` FOREIGN KEY (`Creator`) REFERENCES `USER` (`ID`),
   CONSTRAINT `schedule_ibfk_2` FOREIGN KEY (`GName`, `OID`) REFERENCES `GROUP` (`Name`, `OID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -246,6 +245,7 @@ CREATE TABLE `SCHEDULE` (
 
 LOCK TABLES `SCHEDULE` WRITE;
 /*!40000 ALTER TABLE `SCHEDULE` DISABLE KEYS */;
+INSERT INTO `SCHEDULE` VALUES ('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','03:30:00','05:30:00','2022-07-29','Morning Discussion',1,7),('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','06:30:00','10:30:00','2022-07-28','Presentation Discussion',0,1),('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a','A','61c8d38d-2c9e-4197-998e-0ef01eb3488c','10:30:00','13:30:00','2022-07-28','Presentation Discussion (Contd.)',0,1);
 /*!40000 ALTER TABLE `SCHEDULE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,7 +281,7 @@ CREATE TABLE `USER` (
 
 LOCK TABLES `USER` WRITE;
 /*!40000 ALTER TABLE `USER` DISABLE KEYS */;
-INSERT INTO `USER` VALUES ('67107310-30bb-4f13-a9f0-dd2c1ea9bf0a','DEF','DEF','JDJiJDEyJEFZZ1BQRjVtSldybklyVHUuV282di5vZHpxWEpQNVVNMERJL2JQZEUuZHJUclpncnpnS1VL','JDJiJDEyJEFZZ1BQRjVtSldybklyVHUuV282di4=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-24 09:57:45'),('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a','U1','user1','JDJiJDEyJGFwcVJUR0hzNm96NHpOOWxKVWg5Ty5naWV4a1p1amFlaDI3YjhZZ29oV0dLcFMvdldiZC4y','JDJiJDEyJGFwcVJUR0hzNm96NHpOOWxKVWg5Ty4=','Flat No. 69, Block 420, Machii Talao Lane',9211420420,'u1@gmail.com','Temporary User','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-26 05:02:12'),('b5dd7c1d-74af-4323-a25f-579202ef22a3','U2','U2','JDJiJDEyJFFNZnpmSXlmS2VpWlFlSWdEMW5qUS5UYTBGRm5LeWdPVGJML010eTRUU2N1Q0VMT3kyYXBl','JDJiJDEyJFFNZnpmSXlmS2VpWlFlSWdEMW5qUS4=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-23 09:12:44'),('db7e8277-cf83-485e-8651-d614b269b95c','U4','U4','JDJiJDEyJGZPeGlSWTRyVmdIcjFrb2MxU3BiZi5TeGNCM1lQUmRlOHlLdk5KL0J2NkZmdDdLOHlHU09D','JDJiJDEyJGZPeGlSWTRyVmdIcjFrb2MxU3BiZi4=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-23 09:12:44'),('f21784ff-cc13-4b36-8d6b-d8d1c9e4996f','Bhomic Kaushik','bhomic','JDJiJDEyJEVoaXRQRHRkaFFweGQ1Y3BROGMuMHV6L2guaDRGYTFnR2FURjkwU1VyalJla094WGw2YXV1','JDJiJDEyJEVoaXRQRHRkaFFweGQ1Y3BROGMuMHU=',NULL,NULL,'bhomic.mcs21@cs.du.ac.in',NULL,NULL,NULL),('f39bae3b-dfd9-434c-a13a-700245c9d990','U3','U3','JDJiJDEyJG0wVEFSR3guWDZoRW1qc2ttMDFjUU9XQTFXNFZya29UejFhLy9lTHlzWHZQRXp1Y3ZpaHNt','JDJiJDEyJG0wVEFSR3guWDZoRW1qc2ttMDFjUU8=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-23 09:12:44'),('f47da81f-f94a-4dcb-8fa6-ca61ccc736df','ABC','ABC','JDJiJDEyJFdldHRRVXZQUFVXT1l4anJVUFZTSS41Lk0wQ01aM3RYUFZUWUVtVlZaUEhieFljNjNVekNp','JDJiJDEyJFdldHRRVXZQUFVXT1l4anJVUFZTSS4=',NULL,0,'abc@gmail.com','Student','ddbe2a38-075a-11ed-806a-3221e19b7403',NULL);
+INSERT INTO `USER` VALUES ('67107310-30bb-4f13-a9f0-dd2c1ea9bf0a','DEF','DEF','JDJiJDEyJEFZZ1BQRjVtSldybklyVHUuV282di5vZHpxWEpQNVVNMERJL2JQZEUuZHJUclpncnpnS1VL','JDJiJDEyJEFZZ1BQRjVtSldybklyVHUuV282di4=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-24 09:57:45'),('93c5f28f-e5ac-4aba-97fc-ad0cfbf7088a','U1','user1','JDJiJDEyJGFwcVJUR0hzNm96NHpOOWxKVWg5Ty5naWV4a1p1amFlaDI3YjhZZ29oV0dLcFMvdldiZC4y','JDJiJDEyJGFwcVJUR0hzNm96NHpOOWxKVWg5Ty4=','Flat No. 69, Block 420, Machii Talao Lane',9211420420,'u1@gmail.com','Temporary User','61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-26 05:02:12'),('b266f145-4df4-4fc8-81b1-a838c46a3b6d','abhi','abhi','JDJiJDEyJFRHbnhvQ3Fqb3l0ZmZxRnNYdTd5Y3V4RWs0UTE5NGtlZlE2d1NZaEMyQlJ3OU1ERUZFdElT','JDJiJDEyJFRHbnhvQ3Fqb3l0ZmZxRnNYdTd5Y3U=','ghar',1111111111,'abhi@gmail.com','CTO','c8c9c7c2-e4d6-44b3-8d63-11b06e2aba1b','2022-07-28 12:53:50'),('b5dd7c1d-74af-4323-a25f-579202ef22a3','U2','U2','JDJiJDEyJFFNZnpmSXlmS2VpWlFlSWdEMW5qUS5UYTBGRm5LeWdPVGJML010eTRUU2N1Q0VMT3kyYXBl','JDJiJDEyJFFNZnpmSXlmS2VpWlFlSWdEMW5qUS4=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-23 09:12:44'),('ca520502-e2c0-439c-9b7f-3829e8ac050e','Sajal Maheshwari','sajal.m','JDJiJDEyJGJJNm1jL3dKNzM3WFFybkFRbEFjQXVJVFd4dUYzRDJXMEFMLlQ4dTE1cFJneDBJQkg0MlJH','JDJiJDEyJGJJNm1jL3dKNzM3WFFybkFRbEFjQXU=','Shalimar Bagh, Delhi - 110088',8840980731,'sajalmaheshwari21@gmail.com','admin tester','37eae6c0-b2dd-4b8b-9ccf-de780a844337','2022-07-28 06:13:08'),('db7e8277-cf83-485e-8651-d614b269b95c','U4','U4','JDJiJDEyJGZPeGlSWTRyVmdIcjFrb2MxU3BiZi5TeGNCM1lQUmRlOHlLdk5KL0J2NkZmdDdLOHlHU09D','JDJiJDEyJGZPeGlSWTRyVmdIcjFrb2MxU3BiZi4=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-23 09:12:44'),('f21784ff-cc13-4b36-8d6b-d8d1c9e4996f','Bhomic Kaushik','bhomic','JDJiJDEyJEVoaXRQRHRkaFFweGQ1Y3BROGMuMHV6L2guaDRGYTFnR2FURjkwU1VyalJla094WGw2YXV1','JDJiJDEyJEVoaXRQRHRkaFFweGQ1Y3BROGMuMHU=',NULL,NULL,'bhomic.mcs21@cs.du.ac.in',NULL,NULL,NULL),('f39bae3b-dfd9-434c-a13a-700245c9d990','U3','U3','JDJiJDEyJG0wVEFSR3guWDZoRW1qc2ttMDFjUU9XQTFXNFZya29UejFhLy9lTHlzWHZQRXp1Y3ZpaHNt','JDJiJDEyJG0wVEFSR3guWDZoRW1qc2ttMDFjUU8=',NULL,0,NULL,NULL,'61c8d38d-2c9e-4197-998e-0ef01eb3488c','2022-07-23 09:12:44'),('f47da81f-f94a-4dcb-8fa6-ca61ccc736df','ABC','ABC','JDJiJDEyJFdldHRRVXZQUFVXT1l4anJVUFZTSS41Lk0wQ01aM3RYUFZUWUVtVlZaUEhieFljNjNVekNp','JDJiJDEyJFdldHRRVXZQUFVXT1l4anJVUFZTSS4=',NULL,0,'abc@gmail.com','Student','ddbe2a38-075a-11ed-806a-3221e19b7403',NULL);
 /*!40000 ALTER TABLE `USER` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -294,4 +294,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-27 14:10:26
+-- Dump completed on 2022-07-28 13:55:50

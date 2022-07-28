@@ -86,8 +86,15 @@ view() {
 
 # sql 'select ID, Name from USER';
 # view "ORGANIZATION";
-describe 'schedule';
-describe 'active_schedule';
+# describe 'schedule';
+# describe 'active_schedule';
+# describe "attendance";
+# view "active_schedule";
+rm -rf static/assets/qr/*
+rm -rf flask_session/*
+sql "delete from ACTIVE_SCHEDULE";
+sql "delete from ATTENDANCE";
+# describe 'active_schedule';
 # describe 'attendance';
 
 # sql "select * from SCHEDULE where mod(datediff('2022-08-03', Commencement_Date), Frequency) = 0"
