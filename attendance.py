@@ -60,10 +60,9 @@ def verify_token(token):
 
 @auth.get_user_roles
 def get_user_roles(user):
-    # if 'role' not in user:
-    #     user['role'] = database.get_user_role(user['ID'])
-    # return user['role']
-    return database.get_user_role(user['ID'])
+    if 'role' not in user:
+        user['role'] = database.get_user_role(user['ID'])
+    return user['role']
 
 # Register the standard endpoints.
 app.register_blueprint(

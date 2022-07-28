@@ -17,7 +17,7 @@ def login_required(http_auth, role=None):
                     flask.url_for('routes.auth.login')
                 )
             flask.g.user = user
-            user_roles = http_auth.get_user_roles(user)
+            user_roles = http_auth.get_user_roles_callback(user)
             if not isinstance(user_roles, (list, tuple)):
                 user_roles = [ user_roles ]
             if role:

@@ -160,14 +160,17 @@ class AttendanceDatabase:
         result = self.execute(children_query)[0]
         return [ row.Name for row in result.fetchall() ]
 
-    def get_parent_chain(self, organization, group):
+    def get_parent_chain(self, organization, group, include_root=True):
         group_list = [ group ]
         while True:
             pgroup = self.execute(sql.select([ self.group_hierarchy.c.Parent ]).where(
                 (self.group_hierarchy.c.Name == group) &
                 (self.group_hierarchy.c.OID == organization)
             ))[0].fetchone()
-            if not pgroup: break
+            if not pgroup:
+                if include_root:
+                    group_list.append(pgroup)
+                break
             group_list.append(pgroup)
         return group_list
 
@@ -176,10 +179,10 @@ class AttendanceDatabase:
         start_groups = { (row.Gname, row.OID) for row in self.execute(query)[0].fetchall() }
         groups = {}
         for group, OID in start_groups:
-            groups |= self.get_parent_chain(OID, group)
+            groups |= self.get_parent_chain(OID, group, include_root=False)
         return groups
 
-    def get_group_hierarchy(self, organization, root_group=None):
+    def get_group_hierarchy(self, organization, root_group=None, flatten=False):
         hierarchy = {}
         queue = [ (root_group, hierarchy) ]
         while len(queue) > 0:
@@ -188,7 +191,17 @@ class AttendanceDatabase:
             for child in children:
                 href[child] = {}
                 queue.append( ( child, href[child] ) )
-        return hierarchy
+        if not flatten:
+            return hierarchy
+        else:
+            linear_hierarchy = [ root_group ]
+            queue = [ (root_group, hierarchy) ]
+            while len(queue) > 0:
+                group, href = queue.pop(0)
+                linear_hierarchy.extend(hierarchy.keys())
+                for child in children:
+                    queue.append( ( child, href[child] ) )
+            return linear_hierarchy
 
     def get_members(self, organization, group_name=None):
         if group_name:
@@ -248,7 +261,7 @@ class AttendanceDatabase:
                 queue.append( ( child, href['children'][child] ) )
         return hierarchy
 
-    def get_active_schedule(self, organization, group, creator, start_time):
+    def get_active_schedule(self, organization, group, creator, start_time, start_date):
         query = sql.select([ self.active_schedule, self.schedule.c.End_Time ])\
             .select_from(self.active_schedule.join(
                 self.schedule,
@@ -260,18 +273,20 @@ class AttendanceDatabase:
             .where(self.active_schedule.c.Creator == creator)\
             .where(self.active_schedule.c.OID == organization)\
             .where(self.active_schedule.c.GName == group)\
-            .where(self.active_schedule.c.Start_Time == start_time).limit(1)
+            .where(self.active_schedule.c.Start_Time == start_time)\
+            .where(self.active_schedule.c.Commencement_Date == start_date).limit(1)
         return self.execute(query)[0].fetchone()
 
-    def delete_active_schedule(self, organization, group, creator, start_time):
+    def delete_active_schedule(self, organization, group, creator, start_time, start_date):
         query = self.active_schedule.delete()\
             .where(self.active_schedule.c.Creator == creator)\
             .where(self.active_schedule.c.OID == organization)\
             .where(self.active_schedule.c.GName == group)\
-            .where(self.active_schedule.c.Start_Time == start_time).limit(1)
+            .where(self.active_schedule.c.Start_Time == start_time)\
+            .where(self.active_schedule.c.Commencement_Date == start_date).limit(1)
         return self.execute(query)[0].fetchone()
 
-    def get_schedule_attendance(self, organization, group, creator, start_time):
+    def get_schedule_attendance(self, organization, group, creator, start_time, start_date):
         query = sql.select([ self.attendance, self.user.c.Name.label('User') ])\
             .select_from(self.attendance.join(
                 self.user, (self.attendance.c.ID == self.user.c.ID)
@@ -279,8 +294,36 @@ class AttendanceDatabase:
             .where(self.attendance.c.Creator == creator)\
             .where(self.attendance.c.OID == organization)\
             .where(self.attendance.c.GName == group)\
-            .where(self.attendance.c.Start_Time == start_time).limit(1)
+            .where(self.attendance.c.Start_Time == start_time)\
+            .where(self.attendance.c.Commencement_Date == start_date)
         return self.execute(query)[0].fetchall()
+
+    def get_schedule_members(self, organization, group, creator, start_time, start_date):
+        # TODO
+        query = sql.select([ self.attendance, self.user.c.Name.label('User') ])\
+            .select_from(self.user.join(
+                self.attendance, (self.attendance.c.ID == self.user.c.ID),
+                is_outer=True
+            ))\
+            .where(self.attendance.c.Creator == creator)\
+            .where(self.attendance.c.OID == organization)\
+            .where(self.attendance.c.GName == group)\
+            .where(self.attendance.c.Start_Time == start_time)
+        return self.execute(query)[0].fetchall()
+
+    def has_attendance_for_schedule(
+        self, user_id, date, organization, group,
+        creator, start_time, start_date
+    ):
+        query = sql.select([ self.attendance ])\
+            .where(self.attendance.c.ID == user_id)\
+            .where(self.attendance.c.Creator == creator)\
+            .where(self.attendance.c.OID == organization)\
+            .where(self.attendance.c.GName == group)\
+            .where(self.attendance.c.Start_Time == start_time)\
+            .where(self.attendance.c.Commencement_Date == start_date)\
+            .where(sql.func.datediff(self.attendance.c.Record_Date, date) == 0)
+        return self.execute(query)[0].fetchone() is not None
 
     def get_schedules_for_user(self, user_id, date):
         query = sql.select([ self.schedule ]) \
