@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style type="text/css">
+    
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.mainold{
+    background-color: #03bbff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2rem;
+}
+
+.qrcode{
+    width: 100%;
+}
+
+.qrcontainer{
+    background-color: #fff;
+    width: 70vw;
+    height: 70vw;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #ffffff66;
+    display: grid;
+    place-items:center;
+}
+@media (min-width: 800px){
+    .qrcontainer{
+        width: 80vh;
+        height: 80vh;
+    }
+}
+
+.dynqr{
+    width: 70%;
+    height: 70%;
+    background-color: #5500ff;
+}
+
+img{
+    width: 100%;
+    height: 100%;
+}
+
+
+.qrcontainer {
+    pointer-events: none;
+}
+
+</style>
+
+
+<style type="text/css">
+    
+.qrcode{
+    width: 100%;
+}
+
+.qrcontainer{
+    margin: 2rem;
+    background-color: #fff;
+    width: 70vw;
+    height: 70vw;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #ffffff66;
+    display: grid;
+    place-items:center;
+}
+@media (min-width: 800px){
+    .qrcontainer{
+        width: 80vh;
+        height: 80vh;
+    }
+}
+
+.dynqr{
+    width: 90%;
+    height: 90%;
+    background-color: #5500ff;
+}
+
+img{
+    width: 100%;
+    height: 100%;
+}
+
+
+.qrcontainer {
+    pointer-events: none;
+}
+
+.eventcontainer p{
+    padding: 1rem;
+}
+
+.donutopener{
+    background-color: #fff;
+    color: #111;
+    font-size: 1em;
+    padding: 0.4rem;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #ffffff88;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.donutopener:hover{
+    transform: scale(1.1);
+}
+
+</style>
+
+
+<style>
+
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+
+.calender input[type="date"]{
+    background: transparent;
+    color: #fff;
+}
+
+#cal{
+    outline: none;
+    border:none;
+    font-size: 1.5em;
+}
+
+
+.calender{
+    background: #ffffff55;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1.6rem;
+
+}
+
+.events{
+
+    padding: 1rem;
+
+    background: #ffffff55;
+    border-radius: 10px;
+    color:#fff;
+    margin: 0.5rem;
+        margin-top: 2rem;
+}
+
+.eventcontainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+.event{
+    padding: 1rem;
+    margin: 1rem;
+    background-color: #ffffff;
+    color: #111;
+    border-radius: 10px;
+    width: 40%;
+    min-width: 120px;
+    max-width: 200px;
+    min-height: 60px;
+    transition: all 0.3s;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    word-break:break-all;
+}
+
+.event:hover{
+    transform: scale(1.1);
+    box-shadow: 5px 5px 10px #00000011;
+}
+
+.eheading{
+    padding: 0.8rem;
+    font-size: 2em;
+    text-align: center;
+    border-bottom: 2px solid #fff;
+}
+
+.donutdiv{
+    width: 70%;
+    max-width: 800px;
+    padding: 1rem;
+
+    background: #ffffff;
+    border-radius: 10px;
+    color:#fff;
+    margin: 0.5rem;
+    margin-top: 2rem;   
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(0);
+}
+
+.donutheading{
+    padding: 0.6rem;
+    font-size: 1.2em;
+    text-align: center;
+    color:#111;
+    border-bottom: 4px solid #11111177;
+}
+
+
+.donutcontainer{
+    color: #03bbff;
+    margin-top: 1rem;
+    width: 100%;
+    height: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff006600;
+
+}
+
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+
+<script src="https://bhomic-ogj.github.io/attendance-gj/qrcode.min.js"></script>
+<!---->    
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/css/bulma-extensions.min.css">
+
+<style type="text/css">
+.dark{
+    background-color: #001220;
+}
+
+.topfix{
+    position: fixed;
+    top:0px;
+    width: 100%;
+}
+
+.atticon{
+    background-color: #fff;
+    border-radius: 50%;
+    background-image: url("https://i.imgur.com/gry5fzw.png");
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    background-position: center;
+}
+
+.hovergreen{
+    display: grid;
+    place-items:center;
+    padding: 0rem 0.6rem;
+    margin: 0 1px;
+    color: #fff;
+    min-height: 50px;
+}
+
+.hovergreen:hover{
+    color: #000;
+    background-color: #42ddae;
+}
+
+#navbarBasicExample{
+    background-color: #001220;
+}    
+
+.navbar-burger{
+    color: #fff;
+}
+
+.navbar-burger:hover{
+    color: #42ddae;
+}
+
+</style>
+
+
+<style type="text/css">
+    
+.mainpage{
+    padding-top: 100px;
+    background-color: #001220;
+    min-height: 100vh;
+}   
+
+.fwhite{
+    color: #fff;
+}
+
+</style>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach(el => {
+        el.addEventListener('click', () => {
+
+            // Get the target from the "data-target" attribute
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+
+        });
+    }); 
+});    
+</script>
+
+
+	<title></title>
+
+<style type="text/css">
+
+*{
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+.main{
+	min-height: 100vh;
+	background-color: #001220;
+	padding-top: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.halfblock{
+    width: 45%;
+    background-color: #ffffff11;
+    min-height: 90vh;
+    display: grid;
+    place-items:center;
+    margin: 1rem 0px;
+}
+
+
+@media (max-width: 1200px){
+    .main{
+            flex-direction: column;
+        }
+    .halfblock{
+        width:90%;
+    }    
+}
+</style>	
+
+</head>
+<body>
+
+    <nav class="navbar dark topfix" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+                <div class="atticon" ></div>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="hovergreen" href="#">
+                    Profile
+                </a>
+                <a class="hovergreen" href="#">
+                    Attendance
+                </a>
+                <a class="hovergreen" href="#">
+                    Generate Report
+                </a>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a href="attgj.html" href="#first-section" class="button is-primary">
+                            <strong>Sign up</strong>
+                        </a>
+                        <a class="button is-light">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="main">
+
+        <div class="halfblock">
+            <div class="qrcontainer">
+                <div class="dynqr">
+            
+                </div>  
+            </div>
+        </div>
+
+        <div class="halfblock">
+            <div class="donutopener" onclick="toggleDonut()">
+                Open Chart
+            </div>
+            <div class="donutdiv">
+                <div class="donutheading">
+                    Donut   
+                </div>
+
+                <div class="donutcontainer">
+                    <canvas id="PA_chart"  aria-label="chart" role="img" height="200" width="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>    
+
+
+<script>
+
+let ctx = document.getElementById("PA_chart").getContext("2d");
+
+let PA_chart = null;
+
+let donutcontainer = document.querySelector('.donutcontainer');
+let donutheading = document.querySelector('.donutheading');
+
+function populateChart(eventid, date, att){
+
+    donutheading.innerHTML = ""+date+" : "+eventid;
+
+    let attarr = att;
+
+    //alert("eventid : "+eventid+ " attarr : "+attarr);
+
+    if(attarr == undefined){
+        PA_chart.destroy();
+        donutcontainer.innerHTML = "No Records Found";
+    }
+    else
+    {   
+        if(PA_chart != null){
+            PA_chart.destroy();
+        }
+        PA_chart=new Chart(ctx,{
+        type: "doughnut",
+        data: {
+            labels: ["Present", "Absent"],
+            datasets: [{
+            backgroundColor: ["#2b5797", "#b91d47"],
+            data: attarr,
+            }]
+        },
+        options: {
+            responsive: true,
+            layout : {
+                padding:{
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                },
+            },
+        },
+        }); 
+    }
+}
+
+populateChart("EVID", "SOME_DATE", [44, 64]);
+
+let donutopen = 0;
+
+let donutdiv = document.querySelector('.donutdiv');
+
+function toggleDonut(){
+    donutopen = (donutopen+1)%2;
+
+    if(donutopen == 1){
+        donutdiv.style.transform = "scale(1)";
+    }
+    else
+    {
+        donutdiv.style.transform = "scale(0)";
+    }
+}
+
+toggleDonut();
+
+</script>
+
+
+<script type="text/javascript">
+
+let dynqr =document.querySelector('.dynqr');
+
+let qr = new QRCode(dynqr, "Welcome to Attendance GJ");
+
+
+function generateQR(qrtext){
+
+    qr.clear();
+    qr.makeCode(qrtext);  
+    
+}
+
+</script>
+
+</body>
+</html>    

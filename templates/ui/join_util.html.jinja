@@ -1,0 +1,58 @@
+<div class='container mt-6'>
+    <div class='columns is-tablet is-vcentered is-12 is-variable'>
+        <div class='column'>
+            <h1 class='title has-text-primary has-text-centered'>Join Organization</h1>
+        </div>
+        <div class='column'>
+            <div class='box'>
+                <form action="{{ url_for('routes.org.join') }}" method="POST">
+                    <div class="field">
+                        <label class="label">Organization</label>
+                        <div class="select is-fullwidth">
+                            <select name="OID">
+                                {% for org in orgs %}
+                                <option value="{{ org.OID }}">{{ org.Name }} ({{ org.Website or '<No website>' | e }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Join Code</label>
+                        <div class="control">
+                            <input class="input" type="text" name="code" placeholder="Joining code" required>
+                        </div>
+                    </div>
+                    <div class="field is-grouped is-grouped-right">
+                        <p class="control">
+                            <input class="button is-primary is-outlined" type="submit" value="Join">
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class='columns is-tablet is-vcentered is-12 is-variable'>
+        <div class='column'>
+            <div class='box'>
+                <form action="{{ url_for('routes.org.create') }}" method="POST">
+                    <div class="field">
+                        <div class="field">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Organization Name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="field is-grouped is-grouped-right">
+                            <p class="control">
+                                <input class="button is-primary is-outlined" type="submit" value="Create">
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class='column'>
+            <h1 class='title has-text-primary has-text-centered'>Create a new Organization</h1>
+        </div>
+    </div>

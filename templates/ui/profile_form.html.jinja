@@ -8,84 +8,113 @@
             </div>
         </div>
     </section>
+    {% if not user %}
+    <div class='notification is-danger is-light'>
+        <p>
+            The page for this user does not exist. Try again if this seems to be an error.
+        </p>
+    </div>
+    {% else %}
     <div class="columns is-centered">
         <div class="column is-12">
-            <div class='box'>
-                <form action="#">
+            <section class='block'>
+                <p class="title">Organization Details</p>
+                <div class='box'>
                     {# organization details #}
-
-                    {# Organization name #}
-                    <p class="title">
-                        Organization's Details
-                    </p>
-                    <div class="field">
-                        <label class="label">Name</label>
-                        <div class="control">
-                            <input class="input is-static" type="text" name='Name' placeholder="Name" readonly>
-                        </div>
-                    </div>
-
-                    {# Organization address #}
-                    <div class="field">
-                        <label class="label">Address</label>
-                        <div class="control">
-                            <input class="input is-static" type="text" name='Address' placeholder="Name" readonly>
-                        </div>
-                    </div>
-
-                    {# Organization email #}
-                    <div class="field">
-                        <label class="label">Email</label>
-                        <div class="control">
-                            <input class="input is-static" type="email" name='Email' placeholder="Email@abc.com"
-                                readonly>
-                        </div>
-                    </div>
-
-                    {# Organization code #}
-                    <div class="field">
-                        <label class="label">Code of the Organization</label>
-                        <div class="control">
-                            <input class="input is-static" type="text" name='Code' placeholder="Code" readonly>
-                        </div>
-                    </div>
-
+                    {% include "impl/components/organization.html.jinja" %}
+                </div>
+            </section>
+            <section class='block'>
+                <h1 class="title"> Personal Details </h1>
+                <div class='box'>
                     {# User details #}
-                    <p class="title">
-                        Personal Details
-                    </p>
-                    {# user name #}
-                    <div class="field">
-                        <label class="label">Name</label>
-                        <div class="control">
-                            <input class="input is-static" type="text" name='name' placeholder="Name" readonly>
+                    <form action="{{ url_for('routes.users.edit_user') }}" id="userform">
+                        {# user name #}
+                        <div class="field">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input is-static" type="text" name='name'
+                                    placeholder="Name" readonly
+                                    value="{{ user.Name }}">
+                            </div>
                         </div>
-                    </div>
 
-
-                    {# user email #}
-                    <div class="field">
-                        <label class="label">Email</label>
-                        <div class="control">
-                            <input class="input is-static" type="email" name='e-mail' placeholder="Email@abc.com"
-                                readonly>
+                        {# user name #}
+                        <div class="field">
+                            <label class="label">Username</label>
+                            <div class="control">
+                                <input class="input is-static" type="text" name='username'
+                                    placeholder="Username" readonly
+                                    value="{{ user.Username }}">
+                            </div>
                         </div>
-                    </div>
 
-                    {# user contact #}
-                    <div class="field">
-                        <label class="label">Contact</label>
-                        <div class="control">
-                            <input class="input is-static" type="text" name='contact' placeholder="Contact" readonly>
+                        {# user email #}
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <div class="control">
+                                <input class="input is-static" type="email" name='e-mail'
+                                    placeholder="E-mail address" readonly
+                                    value="{{ user.Email or '' }}">
+                            </div>
                         </div>
-                    </div>
 
-                    {# save button #}
-                    <div class="control">
-                        <button class="button is-primary">Save Details</button>
-                    </div>
-                </form>
-            </div>
+                        {# user contact #}
+                        <div class="field">
+                            <label class="label">Contact</label>
+                            <div class="control">
+                                <input class="input is-static" type="tel" name='contact'
+                                    placeholder="Contact" readonly
+                                    value="{{ user.Contact or '' }}">
+                            </div>
+                        </div>
+
+                        {# user designation #}
+                        <div class="field">
+                            <label class="label">Designation</label>
+                            <div class="control">
+                                <input class="input is-static" type="text" name='designation'
+                                    placeholder="Designation" readonly
+                                    value="{{ user.Designation or '' }}">
+                            </div>
+                        </div>
+
+                        {# user address #}
+                        <div class="field">
+                            <label class="label">Address</label>
+                            <div class="control">
+                                <input class="input is-static" type="text" name='address'
+                                    placeholder="Address" readonly
+                                    value="{{ user.Address or '' }}">
+                            </div>
+                        </div>
+
+                        {% if current_user and current_user.ID == user.ID %}
+                            {# save button #}
+                            <div class="field is-grouped is-grouped-right">
+                                <div class="control">
+                                    <button class="button is-primary" id="edit">Edit</button>
+                                </div>
+                            </div>
+                            <div class="field is-grouped is-grouped-right">
+                                <div class="control">
+                                    <input type="reset" class="button is-light is-hidden" id="cancel" value="Cancel">
+                                </div>
+                                <div class="control">
+                                    <input type="submit" class="button is-primary is-hidden" id="save" hidden value="Save">
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </section>
         </div>
     </div>
+    {% endif %}
 </article>
+
+{% if current_user and current_user.ID == user.ID %}
+    {% block scripts_block %}
+        <script src="{{ url_for('static', filename='scripts/user.js') }}"></script>
+    {% endblock %}
+{% endif %}

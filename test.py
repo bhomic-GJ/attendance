@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import json
 import requests
 
@@ -34,17 +36,26 @@ def main():
         #         'organization': 'ddbe2a38-075a-11ed-806a-3221e19b7403'
         #     }
         # )
-        # login_data = request(
-        #     'POST', f"{__URL__}/api/users/login",
-        #     data={
-        #         'username': 'ABC',
-        #         'password': '12345678',
-        #     }
-        # )
+        login_data = request(
+            'POST', f"{__URL__}/api/users/login",
+            data={
+                'username': 'user1',
+                'password': '1234',
+            }
+        )
         request(
-            'GET', f"{__URL__}/api/users/view",
+            'POST', f"{__URL__}/api/schedule/create",
+            data={
+                'group': 'A',
+                'start_time': '09:00:00',
+                'end_time': '11:00:00',
+                'start_date': '2022-07-27',
+                'title': 'Ev1',
+                'status': 1,
+                'frequency': 7
+            },
             headers={
-                'Authorization': f"Bearer {''}"
+                'Authorization': f"Bearer {login_data['token']}"
             }
         )
     except:

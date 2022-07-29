@@ -1,0 +1,90 @@
+<div class="scheduleform">
+    <article class="container bcontainer">
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <p class="title fwhite bt">
+                        Create New Schedule
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class='box'>
+                    <form action="{{ url_for('routes.sched.create') }}" method="POST">
+                        <div class="field">
+                            <label class="label">Title</label>
+                            <div class="control">
+                                <input class="input" type="text" name='title' placeholder="title">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Group</label>
+                            <div class="control">
+                                <div class="select is-fullwidth">
+                                    <select name="group" required>
+                                        {% for group in user_groups %}
+                                        <option value="{{ group }}">{{ group }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Start Time</label>
+                            <div class="control">
+                                <input class="input" type="time" data-name="start_time"
+                                    data-value='{{ start_time }}' placeholder="Start Time" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">End Time</label>
+                            <div class="control">
+                                <input class="input" type="time" data-name='end_time'
+                                    data-value='{{ end_time }}' placeholder="End Time" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Commencement Date</label>
+                            <div class="control">
+                                <input class="input" type="date" data-name='start_date' placeholder="Commencement Date"
+                                    required data-set-min data-value="{{ start_date }}">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Type</label>
+                            <div class="control is-expanded">
+                                <div class='select is-fullwidth'>
+                                    <select name='status' required>
+                                        <option value="0">One Time Event</option>
+                                        <option value="1">Recurring / Repeating Event</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Recurrence Rate / Frequency</label>
+                            <div class="control">
+                                <input class="input" type="number" value="{{ frequency or 1 }}" min='1' max='365'
+                                    name='frequency' placeholder="Frequency">
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped is-grouped-right">
+                            <div class="control">
+                                <button class="button is-primary">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </article>
+</div>

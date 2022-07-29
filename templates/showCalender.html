@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css"
+    integrity="sha256-jLWPhwkAHq1rpueZOKALBno3eKP3m4IMB131kGhAlRQ=" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"
+    integrity="sha256-XCdgoNaBjzkUaEJiauEq+85q/xi/2D4NcB3ZHwAapoM=" crossorigin="anonymous"></script>
+
+<div id='calendar'></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            events: [
+                    {
+                        title: 'A_user1',
+                        start: '2022-07-25T09:00:00',
+                        end: '2022-07-25T11:00:00'
+                    },
+            ]
+        });
+        calendar.render();
+    });
+
+/*
+
+with data = [
+                    {
+                        "GName": "A",
+                        "Creator": "user1",
+                        "Start_Time": "09:00",
+                        "Start_Time_Row": 9,
+                        "End_Time": "11:00",
+                        "Time_Span": 2,
+                        "Status": 1,
+                        "Frequency": 7
+                    },
+                    {
+                        "GName": "B",
+                        "Creator": "user1",
+                        "Start_Time": "12:00",
+                        "Start_Time_Row": 12,
+                        "End_Time": "13:00",
+                        "Time_Span": 1,
+                        "Status": 1,
+                        "Frequency": 7
+                    },
+                    {
+                        "GName": "C",
+                        "Creator": "user1",
+                        "Start_Time": "15:00",
+                        "Start_Time_Row": 15,
+                        "End_Time": "18:00",
+                        "Time_Span": 4,
+                        "Status": 1,
+                        "Frequency": 7
+                    }
+                ]
+
+*/
+
+</script>
+
+</body>
+</html>

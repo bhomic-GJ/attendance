@@ -1,5 +1,12 @@
 {% extends "base.html.jinja" %}
 
+{% block title %}
+    {{- user.Name }} (User)
+{% endblock title %}
+
 {% block main %}
+    {% if current_user and current_user.ID == user.ID %}
+        {% include "ui/join_util.html.jinja" %}
+    {% endif %}
     {% include "ui/profile_form.html.jinja" %}
 {% endblock main %}

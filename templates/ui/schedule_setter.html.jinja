@@ -1,0 +1,53 @@
+{% extends "base.html.jinja" %}
+
+{% block title %}
+    Events between {{ dates[0] | field("%B %e") }} to {{ dates[-1] | field("%B %e") }}
+{% endblock title %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.sched.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css"
+        integrity="sha256-jLWPhwkAHq1rpueZOKALBno3eKP3m4IMB131kGhAlRQ=" crossorigin="anonymous">
+{% endblock css_block %}
+
+{% block sub_main %}
+    <div class='columns px-4 pt-2'>
+        <div class='column is-12'>
+            <div id='calendar'></div>
+        </div>
+        {% if current_user.role == 'admin' %}
+            <div class='column is-0'>
+                <div id="modal-js-example" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-content">
+                        <div class="box">
+                            {% include "impl/components/schedule.html.jinja" %}
+                        </div>
+                    </div>
+                    <button class="modal-close is-large" aria-label="close"></button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock sub_main %}
+
+{% block scripts_block %}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"
+        integrity="sha256-XCdgoNaBjzkUaEJiauEq+85q/xi/2D4NcB3ZHwAapoM=" crossorigin="anonymous"></script>
+    <script>
+        const globalScheduleRoute = "{{ url_for('routes.sched.view') }}";
+        const globalInitDate = "{{ dates[0] }}";
+        const globalEvents = [
+            {% for date in dates %}
+                {% for event in schedules[loop.index0] %}
+                    {
+                        title: '{{event.Title}} - {{ event.GName }} . {{ event.CreatorName }}',
+                        start: new Date('{{ date | field('%Y-%m-%d') }}T{{- event.Start_Time -}}+0000'),
+                        end: new Date('{{ date | field('%Y-%m-%d') }}T{{- event.End_Time -}}+0000'),
+                    },
+                {% endfor %}
+            {% endfor %}
+        ];
+    </script>
+    <script src="{{ url_for('static', filename='scripts/schedule.js') }}"></script>
+{% endblock scripts_block %}

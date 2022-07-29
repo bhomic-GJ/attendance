@@ -1,0 +1,76 @@
+<article class="container">
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <p class="title">
+                    Register
+                </p>
+                <p class="subtitle">
+                    Create a new account
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="columns is-centered">
+        <div class="column is-half">
+            <div class='box'>
+                <form action="{{ url_for('routes.auth.register') }}" method="POST">
+                    {# name #}
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" name='name'
+                                placeholder="Name" value="{{ Name or '' }}" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    {# username #}
+                    <div class="field">
+                        <label class="label">Username</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" placeholder="Username"
+                                name='username' value="{{ Username or '' }}" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    {# email #}
+                    <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="email" name='e-mail'
+                                placeholder="E-mail Address" value="{{ Email or '' }}">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    {# password #}
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="password"
+                                placeholder="Password" name="password" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    {# submit button #}
+                    <div class="field is-grouped is-grouped-right">
+                        <div class="control">
+                            <button class="button is-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</article>

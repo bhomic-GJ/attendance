@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend.css') }}">
+
+    </head>
+    <body>
+
+        <div class="main">
+            <div class="calender">
+                <input type="date" id="cal" onchange="calhandler(event);"/>
+            </div>
+
+
+            <div class="events">
+                <div class="eheading">Events</div>
+
+                <div class="eventcontainer">
+                    <div class="event">Event 1</div>
+                </div>
+            </div>
+
+            <div class="donutdiv">
+                <div class="donutheading">
+                    Donut
+                </div>
+
+                <div class="donutcontainer">
+                    <canvas id="PA_chart" aria-label="chart" role="img" height="200" width="200"></canvas>
+                </div>
+            </div>
+
+        </div>
+        <script src="{{ url_for('static', filename='scripts/attendance-non-admin.js') }}"></script>
+
+    </body>
+</html>

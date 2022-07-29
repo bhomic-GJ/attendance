@@ -1,40 +1,23 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//     let main = document.querySelector(".main");
-
-//     let nav = document.querySelector(".nav");
-//     nav.style.transform = "translateX(-100%)";
-
-//     let l1 = document.querySelector(".l1");
-//     let l2 = document.querySelector(".l2");
-//     let l3 = document.querySelector(".l3");
-
-//     l1.classList = "line";
-//     l2.classList = "line";
-//     l3.classList = "line";
-
-//     let toggle = 0;
-
-//     let navicon = document.querySelector(".navicon");
-
-//     navicon.onclick = function () {
-//         toggle = (toggle + 1) % 2;
-
-//         if (toggle == 0) {
-//             l1.classList = "line";
-//             l2.classList = "line";
-//             l3.classList = "line";
-
-//             nav.style.transform = "translateX(-100%)";
-//         }
-//         else {
-//             l1.classList = "line l1";
-//             l2.classList = "line l2";
-//             l3.classList = "line l3";
-
-//             nav.style.transform = "none";
-//         }
-//     }
-// });
+function fromUTCDate(datestr) {
+    const date = new Date(datestr);
+    return `${date.getFullYear()}-`+
+        `${(date.getMonth()+1).toString().padStart(2, '0')}-`+
+        `${date.getDate().toString().padStart(2, '0')}`;
+}
+function fromUTCTime(timestr) {
+    const date = new Date((new Date()).toISOString().split('T')[0] + 'T' + timestr);
+    return `${date.getHours()}:${date.getMinutes()}`;
+}
+function toUTCDate(datestr) {
+    if(!datestr) return datestr;
+    const date = new Date(datestr + ' ' + (new Date()).toTimeString());
+    return date.toISOString();
+}
+function toUTCTime(timestr) {
+    if(!timestr) return timestr;
+    const date = new Date((new Date()).toDateString() + ' ' + timestr);
+    return date.toISOString().split('T')[1];
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -56,4 +39,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    (document.querySelectorAll("input[type=time]") || []).forEach(input => {
+        if(input.dataset.value)
+            input.value = fromUTCTime(input.dataset.value);
+        let hidden_field = document.createElement('input');
+        hidden_field.type='hidden';
+        hidden_field.name = input.dataset.name;
+        hidden_field.value = toUTCTime(input.value);
+        input.form.appendChild(hidden_field);
+        input.addEventListener('input', () => { hidden_field.value = toUTCTime(input.value); });
+    });
+    (document.querySelectorAll("input[type=date]") || []).forEach(input => {
+        if(input.dataset.hasOwnProperty('setMin')) {
+            input.min = fromUTCDate((new Date()).toISOString());
+            input.value = input.min;
+        }if(input.dataset.hasOwnProperty('setCurrent')) {
+            input.value = fromUTCDate((new Date()).toISOString());
+        }
+        if(input.dataset.value)
+            input.value = fromUTCDate(input.dataset.value);
+        let hidden_field = document.createElement('input');
+        hidden_field.type='hidden';
+        hidden_field.name = input.dataset.name;
+        hidden_field.value = toUTCDate(input.value);
+        input.form.appendChild(hidden_field);
+        input.addEventListener('input', () => { hidden_field.value = toUTCDate(input.value); });
+    });
 });

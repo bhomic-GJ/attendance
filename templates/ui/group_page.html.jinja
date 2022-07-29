@@ -1,0 +1,47 @@
+<div class="scheduleform">
+    <article class="container is-widescreen ">
+        <section class="b">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <p class="title fwhite bt">
+                        Create a new Group
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class='box'>
+                    <form action="{{ url_for('routes.group.create') }}" method="POST">
+                        <div class="field">
+                            <label class="label">Group Name</label>
+                            <div class="control">
+                                <input class="input" type="text" name='name' placeholder="Group Name" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Parent</label>
+                            <div class="control">
+                                <div class="select is-fullwidth">
+                                    <select name="parent">
+                                        <option value="">Group {{ '<root>' | e }}</option>
+                                        {% for group in groups %}
+                                        <option value="{{ group.Name or '' }}">Group {{ group.Name or '<root>' }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped is-grouped-right">
+                            <div class="control">
+                                <button class="button is-primary">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </article>
+</div>

@@ -4,10 +4,10 @@ import flask
 from sqlalchemy import exc
 from werkzeug import exceptions
 
-from . import users, organization, group
+from . import users, organization, group, schedule
 
 __version__ = "1.0"
-__all__     = [ "users", "organization", "group" ]
+__all__     = [ "users", "organization", "group", "schedule" ]
 
 def create_blueprint(*args, **kwargs):
     blueprint = flask.Blueprint(
@@ -46,7 +46,7 @@ def create_blueprint(*args, **kwargs):
     blueprint.register_blueprint(
         group.create_blueprint(*args, **kwargs)
     )
-    # blueprint.register_blueprint(
-    #     schedule.create_blueprint(*args, **kwargs)
-    # )
+    blueprint.register_blueprint(
+        schedule.create_blueprint(*args, **kwargs)
+    )
     return blueprint

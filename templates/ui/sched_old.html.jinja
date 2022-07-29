@@ -1,0 +1,204 @@
+{% extends "base.html.jinja" %}
+
+{% block css_block %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.sched.css') }}">
+{% endblock css_block %}
+
+{% block sub_main %}
+
+<div></div>
+
+<div class="table-data">
+
+
+    <table class='table is-fullwidth is-bordered is-hoverable'>
+        <thead>
+            <tr id="sticky">
+                {#<th class="no-border"></th>#}
+                <th>First Date</th>
+                {# {% for date in dates %} 
+                <th class="is-clickable no-border">
+                    <div>
+                        <span class='title has-text-primary is-centered'>{{ date | field('%d') }}</span>
+                        <span class='subtitle has-text-primary is-centered'>{{ date | field('%B') }}</span>
+                    </div>
+                </th>
+                {% endfor %} #}
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% with data = [
+                    [
+                        {
+                            "GName": "A",
+                            "Creator": "user1",
+                            "Start_Time": "09:00",
+                            "Start_Time_Row": 9,
+                            "End_Time": "11:00",
+                            "Time_Span": 2,
+                            "Status": 1,
+                            "Frequency": 7
+                        },
+                        {
+                            "GName": "B",
+                            "Creator": "user1",
+                            "Start_Time": "12:00",
+                            "Start_Time_Row": 12,
+                            "End_Time": "13:00",
+                            "Time_Span": 1,
+                            "Status": 1,
+                            "Frequency": 7
+                        },
+                        {
+                            "GName": "C",
+                            "Creator": "user1",
+                            "Start_Time": "15:00",
+                            "Start_Time_Row": 15,
+                            "End_Time": "18:00",
+                            "Time_Span": 4,
+                            "Status": 1,
+                            "Frequency": 7
+                        }
+                    ],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    []
+                ]
+            %}
+
+            {% set firstdate = data[0] %} 
+
+       
+            {% if firstdate | length > 0 %}
+            {% set firsteventrowno = firstdate[0]['Start_Time_Row'] %}
+            {% set firsteventcreator = firstdate[0]['Creator']%}
+            {% set firsteventspanhours = firstdate[0]['Time_Span']%}
+
+            {% for j in range(firsteventrowno) %}
+                <tr>
+                    <td class="is-clickable">
+                        <div class="cell">
+                            <div class="e-name">{{j}} No Event</div>
+                            <div class="e-creator">No Creator</div>
+                            {# {{ i }}, {{ j }} #}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+            <td class="is-clickable" rowspan="{{firsteventspanhours}}">
+                    <div class="cell">
+                        <div class="e-name">{{firsteventrowno}} Event</div>
+                        <div class="e-creator"> {{firsteventcreator}}</div>
+                        {# {{ i }}, {{ j }} #}
+                    </div>
+            </td>
+            </tr>
+
+            {% endif %}
+    
+    
+            {% for ev in range(1, firstdate | length) %}
+
+                {% set currevobj = firstdate[ev]%}
+                {% set prevevobj = firstdate[ev-1]%}
+                {% set prevrowno = prevevobj['Start_Time_Row']%}
+                {% set preveventspanhours = firstdate[ev-1]['Time_Span']%}
+                {% set nextrowno = currevobj['Start_Time_Row'] %}
+                {% set creator = currevobj['Creator']%}
+                {% set curreventspanhours = firstdate[ev]['Time_Span']%}
+
+
+                {% for j in range(prevrowno+preveventspanhours, nextrowno) %}
+                <tr>
+                    <td class="is-clickable">
+                        <div class="cell">
+                            <div class="e-name">{{j}} No Event</div>
+                            <div class="e-creator">No Creator</div>
+                            {# {{ i }}, {{ j }} #}
+                        </div>
+                    </td>
+                    {# {% if i == 0 %}
+                            <td class="is-clickable" rowspan="2"> <div class = "cell"> <div class="e-name">Event</div> <div class="e-creator"> Creator</div> </div></td>
+                        {% elif i != 1 %}
+                            <td class="is-clickable"> <div class = "cell"> <div class="e-name">Event</div> <div class="e-creator"> Creator</div> </div></td>
+                        {% endif %} #}
+
+                </tr>
+
+                {% endfor %}
+
+                <tr>
+                <td class="is-clickable" rowspan ="{{curreventspanhours}}">
+                    <div class="cell">
+                        <div class="e-name">{{nextrowno}} Event</div>
+                        <div class="e-creator"> {{creator}}</div>
+                        {# {{ i }}, {{ j }} #}
+                    </div>
+                </td>
+                </tr>
+
+            {%endfor%}
+
+            {% if firstdate | length > 0 %}
+
+            {%set lastevrowno = firstdate[firstdate | length  - 1]['Start_Time_Row']%}
+            {% set lasteventspanhours = firstdate[firstdate | length  - 1]['Time_Span']%}
+
+            {% for j in range(lastevrowno, 24) %}
+                <tr>
+                    <td class="is-clickable">
+                        <div class="cell">
+                            <div class="e-name">{{j}} No Event</div>
+                            <div class="e-creator">No Creator</div>
+                            {# {{ i }}, {{ j }} #}
+                        </div>
+                    </td>
+                </tr>
+
+            {% endfor %}
+            {% endif %}
+
+            {% with ix = [ 0, 0, 0, 0, 0, 0, 0 ] %}
+            {% for i in range(24) %}
+            <tr>
+                <td class="no-border">
+                    <div class="shiftup">{{i}}</div>
+                </td>
+                {% for j in range(7) %}
+                <td class="is-clickable">
+                    <div class="cell">
+                        <div class="e-name">Event</div>
+                        <div class="e-creator"> Creator</div>
+                        {# {{ i }}, {{ j }} #}
+                    </div>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                {# {% if i == 0 %}
+                        <td class="is-clickable" rowspan="2"> <div class = "cell"> <div class="e-name">Event</div> <div class="e-creator"> Creator</div> </div></td>
+                    {% elif i != 1 %}
+                        <td class="is-clickable"> <div class = "cell"> <div class="e-name">Event</div> <div class="e-creator"> Creator</div> </div></td>
+                    {% endif %} #}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% endwith %}
+            {% endwith %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock sub_main %}
+
+{% block scripts_block %}
+<script>
+    let th = document.querySelector("")
+</script>
+{% endblock scripts_block %}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+	
+*{
+	margin:0px;
+	padding: 0px;
+	box-sizing: border-box;
+	font-family: sans-serif;
+}	
+
+.main{
+	background-color: #03bbff;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+
+.scanner-container{
+	background-color: #fff;	
+	width: 90%;
+	max-width: 1000px;
+	padding: 1rem;
+	border-radius: 10px;
+	box-shadow: 5px 5px 10px #00000022;
+}
+
+#reader__camera_permission_button, #reader__dashboard_section_swaplink, #reader__filescan_input, button{
+	margin: 0.3rem;
+	display: inline-block;
+	padding: 0.6em;
+	background-color: #03bbff;
+	border-radius: 5px;
+	color: #fff;
+	font-size: 1.1em;
+	outline: none;
+	border: none;
+	box-shadow:  3px 3px 3px #03bbff55;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+#reader__dashboard_section_swaplink:link{
+	text-decoration: none;
+}
+
+#reader__camera_permission_button:hover, #reader__dashboard_section_swaplink:hover, button:hover{
+	transform: scale(1.1);
+}
+
+</style>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+</script>
+
+</head>
+
+
+<body>
+
+<div class="main">
+
+
+<div class="scanner-container">
+
+	<div id="reader" width="600px"></div>		
+
+</div>
+
+</div>
+
+<script type="text/javascript">
+
+let dateObj = {
+	'2022-07-26' : {
+		'0':{
+			'name':'Event0', 'attendance':[44, 20],
+		 	'students_attended': {
+		 		'8':'bhomickaushik174@gmail.com', 
+		 		'63':'sanjeevkumar01022001@gmail.com'
+		 	}
+		},
+		'1':{
+			'name':'Event1', 'attendance':[54, 10],
+			'students_attended':{
+		 		'8':'bhomickaushik174@gmail.com', 
+		 		'63':'sanjeevkumar01022001@gmail.com'
+		 	}
+		},
+		'2':{
+			'name':'Event2', 'attendance':[44, 50],
+			'students_attended': {}
+		},
+		'3':{
+			'name':'Event3', 'attendance':[20, 20],
+			'students_attended': {}
+		}
+	},
+
+	'2022-07-27' : 
+	{
+		'0':{
+			'name':'Event0', 'attendance':[77, 20],
+			'students_attended': {}
+		},
+		'1':{
+			'name':'Event1', 'attendance':[33, 20],
+			'students_attended': {}
+		}, 
+		'2':{
+			'name':'Event2', 'attendance':[77, 10],
+			'students_attended': {}
+		}
+	}
+};	
+
+function onScanSuccess(decodedText, decodedResult) {
+  console.log(`Code matched = ${decodedText}`, decodedResult);
+  processAttendance(decodedText);
+}
+
+function onScanFailure(error) {
+  console.warn(`Code scan error = ${error}`);
+}
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+  "reader",
+  { fps: 10, qrbox: {width: 250, height: 250} },
+   false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+
+let myrollno = 8;
+let myemail = 'bhomickaushik174@gmail.com';
+
+function processAttendance(decodedText){
+	let dtarr = decodedText.split('_');
+	if(dtarr.length == 2){
+		let date = dtarr[0];
+		let evid = dtarr[1];
+
+		if(dateObj[''+date] != undefined){
+			if(dateObj[''+date][''+evid] != undefined){
+				dateObj[''+date][''+evid]['students_attended'][''+myrollno] = myemail;
+				alert("Attendance Submitted");
+			}
+			else
+			{
+				alert("Wrong QR");
+			}
+		}
+		else
+		{
+			alert("Some other QR Scanned");
+		}
+	}
+	else
+	{
+		alert("Ask for QR from your teacher");
+	}
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{% extends "base.html.jinja" %}
+
+{% block main %}
+    {% if current_user.role == 'admin' %}
+        {% include "impl/attendance-admin.html.jinja" %}
+    {% else %}
+        {% include "impl/attendance-non-admin.html.jinja" %}
+    {% endif %}
+{% endblock main %}

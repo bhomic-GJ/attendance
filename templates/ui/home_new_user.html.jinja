@@ -1,24 +1,164 @@
 {% extends "base.html.jinja" %}
 
-{% block main %}
+{% block sub_main %}
 <div class="container is-fullhd is-fluid">
+    {# <section class="main">
+        <section class="myhero">
+			<div class="wave">
+				<svg id="visual" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+					<rect x="0" y="100" width="900" height="400" fill="#001220"></rect>
+					<path class="opac" style="transition-delay:0s"
+						d="M0 395L21.5 390.3C43 385.7 86 376.3 128.8 370.7C171.7 365 214.3 363 257.2 369.5C300 376 343 391 385.8 398.8C428.7 406.7 471.3 407.3 514.2 402C557 396.7 600 385.3 642.8 389C685.7 392.7 728.3 411.3 771.2 416C814 420.7 857 411.3 878.5 406.7L900 402L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z"
+						fill="#42ddae"></path>
+					<path class="opac" style="transition-delay:4s"
+						d="M0 425L21.5 423.8C43 422.7 86 420.3 128.8 424.2C171.7 428 214.3 438 257.2 443.3C300 448.7 343 449.3 385.8 452C428.7 454.7 471.3 459.3 514.2 461.8C557 464.3 600 464.7 642.8 459.3C685.7 454 728.3 443 771.2 438.3C814 433.7 857 435.3 878.5 436.2L900 437L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z"
+						fill="#2abc9c"></path>
+					<path class="opac" style="transition-delay:2s"
+						d="M0 485L21.5 480.3C43 475.7 86 466.3 128.8 463.2C171.7 460 214.3 463 257.2 468.3C300 473.7 343 481.3 385.8 480.3C428.7 479.3 471.3 469.7 514.2 471C557 472.3 600 484.7 642.8 489.3C685.7 494 728.3 491 771.2 490.7C814 490.3 857 492.7 878.5 493.8L900 495L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z"
+						fill="#189c88"></path>
+					<path class="opac" style="transition-delay:8s"
+						d="M0 495L21.5 493.7C43 492.3 86 489.7 128.8 492.3C171.7 495 214.3 503 257.2 509.5C300 516 343 521 385.8 525.8C428.7 530.7 471.3 535.3 514.2 531.5C557 527.7 600 515.3 642.8 505.5C685.7 495.7 728.3 488.3 771.2 490.8C814 493.3 857 505.7 878.5 511.8L900 518L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z"
+						fill="#107c72"></path>
+					<path class="opac" style="transition-delay:6s"
+						d="M0 525L21.5 528.3C43 531.7 86 538.3 128.8 542.7C171.7 547 214.3 549 257.2 553.5C300 558 343 565 385.8 561C428.7 557 471.3 542 514.2 541.7C557 541.3 600 555.7 642.8 556.7C685.7 557.7 728.3 545.3 771.2 540.8C814 536.3 857 539.7 878.5 541.3L900 543L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z"
+						fill="#115e5a"></path>
+				</svg>
+			</div>
+			<div class="appname">
+				Attendance.io
+			</div>
+			<div class="see-more">
+				<a class="flex-center" href="#first-section">
+					<img class="go-down" src="https://i.imgur.com/0HgqUpc.png">
+				</a>
+			</div>
+		</section>
+        <div id="first-section" class="bottom-page">
+			<div class="leftblock">
+				<div class="about">Attendance, made easier</div>
+				<div class="tagline">
+                    <p>A one-stop-shop for recording, reporting and visualizing attendance.</p>
+                    <p>Flexible, as per your organization's needs.</p>
+                    <p>Try it today.</p>
+                </div>
+			</div>
+			<div class="rightblock">
+				<div class="regblock">
+
+					<article class="container bcontainer">
+						<section class="hero">
+							<div class="hero-body">
+								<div class="container has-text-centered">
+									<p class="title fwhite bt">
+										Register
+									</p>
+									<p class="subtitle fwhite bst">
+										Create a new User account
+									</p>
+								</div>
+							</div>
+						</section>
+						<div class="columns is-centered">
+							<div class="column is-half">
+								<div class='box'>
+									<form action="#">
+										<div class="field">
+											<label class="label">Name</label>
+											<div class="control">
+												<input class="input" type="text" name='name' placeholder="Name"
+													required>
+											</div>
+										</div>
+
+										<div class="field">
+											<label class="label">Username</label>
+											<div class="control has-icons-left has-icons-right">
+												<input class="input" type="text" placeholder="Username" name='username'
+													required>
+												<span class="icon is-small is-left">
+													<i class="fas fa-user"></i>
+												</span>
+												<span class="icon is-small is-right">
+													<i class="fas fa-check"></i>
+												</span>
+											</div>
+										</div>
+
+										<div class="field">
+											<label class="label">Email</label>
+											<div class="control has-icons-left has-icons-right">
+												<input class="input" type="email" name='e-mail'
+													placeholder="E-mail Address" value="" required>
+												<span class="icon is-small is-left">
+													<i class="fas fa-envelope"></i>
+												</span>
+												<span class="icon is-small is-right">
+													<i class="fas fa-exclamation-triangle"></i>
+												</span>
+											</div>
+										</div>
+
+										<div class="field">
+											<label class="label">Password</label>
+											<div class="control">
+												<input class="input" type="password" placeholder="Password" required>
+											</div>
+										</div>
+
+										<div class="field">
+											<label class="label">Organization</label>
+											<div class="control">
+												<div class="select is-fullwidth">
+													<select>
+														<option>Select dropdown</option>
+														<option>With options</option>
+													</select>
+												</div>
+											</div>
+										</div>
+
+										<div class="control">
+											<button class="button is-primary">Submit</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</article>
+
+					<div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+    </section> #}
     <section class="hero ">
         {# <div class="hero-body"> #}
 
         {# </div> #}
         <div class="columns is-centered is-vcentered is-desktop">
             <div class="column is-centered">
-                <section class="hero is-medium">
+                <section class="hero">
                     <div class="hero-body">
-                        <p class="title is-spaced">About</p>
+                        <p class="title is-spaced">Attendance, Made Easier</p>
                         <p class="subtitle">
+                            <p>A one-stop-shop for recording, reporting and visualizing attendance.</p>
+                            <p>Flexible, as per your organization's needs.</p>
+                            <p>Try it today.</p>
                         </p>
                 </section>
             </div>
             <div class="column">
-                {% include "ui/register.html.jinja" %}
+                {% include "impl/register.html.jinja" %}
             </div>
         </div>
     </section>
 </div>
-{% endblock main %}
+{% endblock sub_main %}
+
+{% block css_block %}
+    {# <link rel="stylesheet" href="{{ url_for('static', filename='css/style.home.new.css') }}" #}
+{% endblock css_block %}

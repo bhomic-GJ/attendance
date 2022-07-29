@@ -1,0 +1,14 @@
+{% block css_block %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.attend-adm.css') }}"/>
+{% endblock css_block %}
+
+{% block scripts_block %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts/attendance-admin.js') }}"></script>
+{% endblock scripts_block %}
+
+{% block sub_main %}
+    {% include "qrgenadmin/adminqr.html.jinja" %}
+{% endblock sub_main %}
