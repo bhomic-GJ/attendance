@@ -26,7 +26,7 @@ run_app() {
         source venv/bin/activate;
     fi
 
-    export FLASK_ENV=development
+    export FLASK_ENV=production
     export FLASK_APP=attendance
 
     flask run
