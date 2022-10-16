@@ -1,6 +1,17 @@
 let donutopen = 0;
 let donutdiv = document.querySelector('.donutdiv');
 
+const LAUNCH_MESSAGE = String.raw`
+Ask your organization members to mark their attendances by logging
+in to the website and scanning the QR shown on your screen.
+
+A live count of present and absent people is also shown.
+
+Use the 'Toggle Chart' button to toggle the visibility of the pie.
+
+Note: The QR code is likely to be refreshed upon tab switch, so better to avoid the same.
+`;
+
 function toggleDonut() {
     donutopen = (donutopen + 1) % 2;
 
@@ -45,18 +56,24 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         },
     });
-    populateChart(chart, { present: 4, absent: 60 });
 
-    // let socket = io();
+    let socket = io();
 
-    // socket.emit('SYN', "admin");
-    // socket.on('SYN-ACK', () => {
-    //     // Init GUI
-    // });
-    // socket.on('count_update', info => {
-    //     console.log(info);
-    //     populateChart(chart, info);
-    // });
+    socket.on('connect', () => {
+        alert(LAUNCH_MESSAGE);
+        socket.emit('SYN', "admin");
+        socket.on('respond', data => {
+            console.log(data);
+        })
+        socket.on('SYN-ACK', (info) => {
+            console.log(info);
+            populateChart(chart, info);
+        });
+        socket.on('count_update', info => {
+            console.log(info);
+            populateChart(chart, info);
+        });
+    });
 
-    // window.onunload = () => { socket.disconnect(true); }
+    window.onunload = () => { socket.disconnect(true); }
 });

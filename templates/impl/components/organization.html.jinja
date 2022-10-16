@@ -1,11 +1,15 @@
-{# Organization name #}
 {% if organization %}
+    {% if current_user and edit_mode %}
+    <div class="field">
+        <form id="editForm" method="POST" action="{{ url_for('routes.org.edit') }}">
+    {% endif -%}
+
+    {# Organization name #}
     <div class="field">
         <label class="label">Name</label>
         <div class="control">
-            <input class="input is-static" type="text" name='Name'
-                placeholder="Name" readonly
-                value="{{ organization.Name }}">
+            <input class="input is-static" type="text" name='name' placeholder="Name" readonly
+                value="{{ organization.Name }}" form="editForm">
         </div>
     </div>
 
@@ -13,9 +17,8 @@
     <div class="field">
         <label class="label">Address</label>
         <div class="control">
-            <input class="input is-static" type="text" name='address'
-                placeholder="Address of the organization" readonly
-                value="{{ organization.Address or '' }}">
+            <input class="input is-static" type="text" name='address' placeholder="Address of the organization" readonly
+                value="{{ organization.Address or '' }}" form="editForm">
         </div>
     </div>
 
@@ -23,12 +26,56 @@
     <div class="field">
         <label class="label">Website</label>
         <div class="control">
-            <input class="input is-static" type="url" name='website'
-                placeholder="Website URL" readonly
-                value="{{ organization.Website or '' }}">
+            <input class="input is-static" type="url" name='website' placeholder="Website URL" readonly
+                value="{{ organization.Website or '' }}" form="editForm">
         </div>
     </div>
+    {%- if current_user and edit_mode %}
+        </form>
+    </div>
+    {% endif %}
 
+    {% if current_user and edit_mode %}
+        <div class="field">
+            <label class="label">Join Code</label>
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input form="renewForm" class="input is-static" type="text" placeholder="Joining Code" readonly
+                        value="{{ organization.Code }}" data-persistent>
+                </div>
+                <div class="control">
+                    <button form="renewForm"
+                        class="button is-outlined is-inverted" title="Renew">
+                        <span class="icon is-small">
+                            <i class="fas fa-redo"></i>
+                        </span>
+                        <span>Renew</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <form id="renewForm" action="{{ url_for('routes.org.renew') }}" method="POST"></form>
+    {% endif %}
+
+    {% if current_user and edit_mode %}
+        {# save button #}
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button class="button is-primary" id="edit" form="editForm">Edit</button>
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <input type="reset" class="button is-light is-hidden"
+                    form="editForm" id="cancel" value="Cancel">
+            </div>
+            <div class="control">
+                <input type="submit" class="button is-primary is-hidden"
+                    form="editForm" id="save" hidden value="Save">
+            </div>
+        </div>
+    {% endif %}
     {% if hierarchy is defined %}
         <!-- TODO -->
         <h1></h1>

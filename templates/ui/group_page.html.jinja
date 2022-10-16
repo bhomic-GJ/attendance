@@ -1,9 +1,6 @@
-{% extends "base.html.jinja" %}
-
-{% block sub_main %}
 <div class="scheduleform">
-    <article class="container bcontainer">
-        <section class="hero">
+    <article class="container is-widescreen ">
+        <section class="b">
             <div class="hero-body">
                 <div class="container has-text-centered">
                     <p class="title fwhite bt">
@@ -13,15 +10,13 @@
             </div>
         </section>
         <div class="columns is-centered">
-            <div class="column is-half">
+            <div class="column">
                 <div class='box'>
-                    <form action="#">
-
-
+                    <form action="{{ url_for('routes.group.create') }}" method="POST">
                         <div class="field">
                             <label class="label">Group Name</label>
                             <div class="control">
-                                <input class="input" type="text" name='gname' placeholder="Group Name" required>
+                                <input class="input" type="text" name='name' placeholder="Group Name" required>
                             </div>
                         </div>
 
@@ -29,26 +24,24 @@
                             <label class="label">Parent</label>
                             <div class="control">
                                 <div class="select is-fullwidth">
-                                    <select>
-                                        <option>Parent 1</option>
-                                        <option>Parent 2</option>
+                                    <select name="parent">
+                                        <option value="">Group {{ '<root>' | e }}</option>
+                                        {% for group in groups %}
+                                        <option value="{{ group.Name or '' }}">Group {{ group.Name or '<root>' }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="control">
-                            <button class="button is-primary">Submit</button>
+                        <div class="field is-grouped is-grouped-right">
+                            <div class="control">
+                                <button class="button is-primary">Create</button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </article>
-
-    <div>
-
-    </div>
 </div>
-
-{% endblock sub_main %}

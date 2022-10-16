@@ -104,10 +104,13 @@ class AttendanceDatabase:
     def get_organizations(self):
         return self.execute(sql.select([ self.organization ]))[0].fetchall()
 
-    def remove_user_associations(self, user_id):
+    def remove_user_associations_and_migrate(self, user_id, org_id=None):
         query1 = self.membership.delete().where(self.membership.c.ID == user_id)
         query2 = self.attendance.delete().where(self.attendance.c.ID == user_id)
-        self.execute(( (query1, {}), (query2, {}) ))
+        params = { 'OID': org_id }
+        if org_id: params['OJoin_Date'] = sql.func.now()
+        query3 = self.user.update().where(self.user.c.ID == user_id).values(**params)
+        self.execute(( (query1, {}), (query2, {}), (query3, {}) ))
 
     def get_user_role(self, user_id):
         query = sql.select([ self.admin ]).where(self.admin.c.ID == user_id)
@@ -160,26 +163,29 @@ class AttendanceDatabase:
         result = self.execute(children_query)[0]
         return [ row.Name for row in result.fetchall() ]
 
-    def get_parent_chain(self, organization, group):
+    def get_parent_chain(self, organization, group, include_root=True):
         group_list = [ group ]
         while True:
             pgroup = self.execute(sql.select([ self.group_hierarchy.c.Parent ]).where(
                 (self.group_hierarchy.c.Name == group) &
                 (self.group_hierarchy.c.OID == organization)
             ))[0].fetchone()
-            if not pgroup: break
+            if not pgroup:
+                if include_root:
+                    group_list.append(pgroup)
+                break
             group_list.append(pgroup)
         return group_list
 
     def get_user_groups(self, user_id):
         query = sql.select([ self.membership.c.GName, self.membership.c.OID ]).where(self.membership.c.ID == user_id)
-        start_groups = { (row.Gname, row.OID) for row in self.execute(query)[0].fetchall() }
-        groups = {}
+        start_groups = set((row.GName, row.OID) for row in self.execute(query)[0].fetchall())
+        groups = set()
         for group, OID in start_groups:
-            groups |= self.get_parent_chain(OID, group)
+            groups |= set(self.get_parent_chain(OID, group, include_root=False))
         return groups
 
-    def get_group_hierarchy(self, organization, root_group=None):
+    def get_group_hierarchy(self, organization, root_group=None, flatten=False):
         hierarchy = {}
         queue = [ (root_group, hierarchy) ]
         while len(queue) > 0:
@@ -188,7 +194,17 @@ class AttendanceDatabase:
             for child in children:
                 href[child] = {}
                 queue.append( ( child, href[child] ) )
-        return hierarchy
+        if not flatten:
+            return hierarchy
+        else:
+            linear_hierarchy = [ root_group ]
+            queue = [ (root_group, hierarchy) ]
+            while len(queue) > 0:
+                group, href = queue.pop(0)
+                linear_hierarchy.extend(hierarchy.keys())
+                for child in children:
+                    queue.append( ( child, href[child] ) )
+            return linear_hierarchy
 
     def get_members(self, organization, group_name=None):
         if group_name:
@@ -248,42 +264,147 @@ class AttendanceDatabase:
                 queue.append( ( child, href['children'][child] ) )
         return hierarchy
 
-    def get_active_schedule(self, organization, group, creator, start_time):
+    def get_active_schedule(self, organization, group, start_time, start_date):
         query = sql.select([ self.active_schedule, self.schedule.c.End_Time ])\
             .select_from(self.active_schedule.join(
                 self.schedule,
-                (self.active_schedule.c.Creator == self.schedule.c.Creator) &
                 (self.active_schedule.c.OID == self.schedule.c.OID) &
                 (self.active_schedule.c.GName == self.schedule.c.GName) &
-                (self.active_schedule.c.Start_Time == self.schedule.c.Start_Time)
+                (self.active_schedule.c.Start_Time == self.schedule.c.Start_Time) &
+                (self.active_schedule.c.Commencement_Date == self.schedule.c.Commencement_Date)
             ))\
-            .where(self.active_schedule.c.Creator == creator)\
             .where(self.active_schedule.c.OID == organization)\
             .where(self.active_schedule.c.GName == group)\
-            .where(self.active_schedule.c.Start_Time == start_time).limit(1)
+            .where(self.active_schedule.c.Start_Time == start_time.replace(tzinfo=None))\
+            .where(self.active_schedule.c.Commencement_Date == start_date.replace(tzinfo=None)).limit(1)
         return self.execute(query)[0].fetchone()
 
-    def delete_active_schedule(self, organization, group, creator, start_time):
+    def get_schedule(self, organization, group, start_time, start_date):
+        query = sql.select([ self.schedule ])\
+            .where(self.schedule.c.OID == organization)\
+            .where(self.schedule.c.GName == group)\
+            .where(self.schedule.c.Start_Time == start_time.replace(tzinfo=None))\
+            .where(self.schedule.c.Commencement_Date == start_date).limit(1)
+        return self.execute(query)[0].fetchone()
+
+    def can_activate_schedule(self, organization, group, creator, start_time, start_date, date):
+        schedule = self.get_schedule(organization, group, start_time, start_date)
+        if not schedule or schedule.Creator != creator: return False
+        valid_date = schedule.Status == EventStatus.ONE_TIME.value and abs((schedule.Commencement_Date - date.date()).total_seconds()) < (24*3600)
+        valid_date = valid_date or (schedule.Status == EventStatus.RECURRING.value and (date.date() - schedule.Commencement_Date).days % schedule.Frequency == 0)
+        return valid_date and (schedule.Start_Time < date.time() < schedule.End_Time)
+
+    def is_schedule_valid_on_date(self, organization, group, start_time, start_date, date):
+        schedule = self.get_schedule(organization, group, start_time, start_date)
+        if not schedule: return False
+        valid_date = schedule.Status == EventStatus.ONE_TIME.value and abs((schedule.Commencement_Date - date.date()).total_seconds()) < (24*3600)
+        valid_date = valid_date or (schedule.Status == EventStatus.RECURRING.value and (date.date() - schedule.Commencement_Date).days % schedule.Frequency == 0)
+        return valid_date
+
+    def delete_active_schedule(self, organization, group, creator, start_time, start_date):
+        schedule = self.get_schedule(organization, group, start_time, start_date)
+        if not schedule or schedule.Creator != creator: return 0
         query = self.active_schedule.delete()\
-            .where(self.active_schedule.c.Creator == creator)\
             .where(self.active_schedule.c.OID == organization)\
             .where(self.active_schedule.c.GName == group)\
-            .where(self.active_schedule.c.Start_Time == start_time).limit(1)
-        return self.execute(query)[0].fetchone()
+            .where(self.active_schedule.c.Start_Time == start_time.replace(tzinfo=None))\
+            .where(self.active_schedule.c.Commencement_Date == start_date.replace(tzinfo=None))
+        return self.execute(query)[0].rowcount
 
-    def get_schedule_attendance(self, organization, group, creator, start_time):
-        query = sql.select([ self.attendance, self.user.c.Name.label('User') ])\
+    def get_schedule_attendance(self, organization, group, start_time, start_date, date):
+        query = sql.select([ self.attendance, self.user.c.Name ])\
             .select_from(self.attendance.join(
                 self.user, (self.attendance.c.ID == self.user.c.ID)
             ))\
-            .where(self.attendance.c.Creator == creator)\
             .where(self.attendance.c.OID == organization)\
             .where(self.attendance.c.GName == group)\
-            .where(self.attendance.c.Start_Time == start_time).limit(1)
+            .where(self.attendance.c.Start_Time == start_time.replace(tzinfo=None))\
+            .where(self.attendance.c.Commencement_Date == start_date.replace(tzinfo=None))\
+            .where(sql.func.datediff(date.replace(tzinfo=None), self.attendance.c.Record_Time) == 0)
+        return self.execute(query)[0].fetchall()
+
+    def get_attendance_record(self, organization, group, start_time, start_date, date):
+        """
+            WITH present_user (ID, GName, OID) as (Select ATTENDANCE.id, ATTENDANCE.Gname, ATTENDANCE.OID
+                from ATTENDANCE, SCHEDULE where
+                SCHEDULE.GName = ATTENDANCE.GName AND
+                SCHEDULE.OID = ATTENDANCE.OID AND
+                SCHEDULE.Start_Time = ATTENDANCE.Start_Time AND
+                SCHEDULE.Commencement_Date = ATTENDANCE.Commencement_Date AND
+                ATTENDANCE.GName = 'A' AND ATTENDANCE.OID = '61c8d38d-2c9e-4197-998e-0ef01eb3488c')
+            SELECT MEMBERSHIP.ID, IF (MEMBERSHIP.ID = present_user.ID, 'Present', 'Absent') FROM MEMBERSHIP NATURAL LEFT OUTER JOIN present_user
+        """
+        groups = self.get_group_hierarchy(organization, group, flatten=True)
+        group_users = sql.select([ self.membership ])\
+            .where(self.membership.c.GName.in_(groups))\
+            .where(self.membership.c.OID == organization).subquery()
+        if not self.is_schedule_valid_on_date(organization, group, start_time, start_date, date):
+            query = sql.select([
+                group_users.c.ID, self.user.c.Name, sqlalchemy.case((1 == 0, '?'), else_='-').label('Record')
+            ]).select_from(
+                group_users.join( self.user, onclause=(self.user.c.ID == group_users.c.ID) )
+            ).where( ~ (sql.select([ self.admin.c.ID ]).where(group_users.c.ID == self.admin.c.ID).exists()) )
+        else:
+            present_users = sql.select([ self.attendance ])\
+                .where(self.attendance.c.OID == organization)\
+                .where(self.attendance.c.GName == group)\
+                .where(self.attendance.c.Start_Time == start_time.replace(tzinfo=None))\
+                .where(self.attendance.c.Commencement_Date == start_date)\
+                .where(sql.func.datediff(self.attendance.c.Record_Time, date.replace(tzinfo=None)) < 2).subquery()
+            query = sql.select([
+                group_users.c.ID, self.user.c.Name, sqlalchemy.case(
+                    (group_users.c.ID == present_users.c.ID, 'P'), else_='A'
+                ).label('Record')
+            ]).select_from(
+                group_users.join(
+                    present_users, onclause=(group_users.c.ID == present_users.c.ID),
+                    isouter=True
+                ).join(
+                    self.user, onclause=(self.user.c.ID == group_users.c.ID)
+                )
+            ).where( ~ (sql.select([ self.admin.c.ID ]).where(group_users.c.ID == self.admin.c.ID).exists()) )
+        return self.execute(query)[0].fetchall()
+
+    def get_schedule_members(self, organization, group):
+        groups = self.get_group_hierarchy(organization, group, flatten=True)
+        query = sql.select([ self.membership, self.user.c.Name ])\
+            .select_from(self.membership.join(
+                self.user, (self.membership.c.ID == self.user.c.ID)
+            ))\
+            .where(self.membership.c.GName.in_(groups))\
+            .where(self.membership.c.OID == organization).subquery()
+        return self.execute(query)[0].fetchall()
+
+    def has_attendance_for_schedule(
+        self, user_id, date, organization, group,
+        start_time, start_date
+    ):
+        query = sql.select([ self.attendance ])\
+            .where(self.attendance.c.ID == user_id)\
+            .where(self.attendance.c.OID == organization)\
+            .where(self.attendance.c.GName == group)\
+            .where(self.attendance.c.Start_Time == start_time.replace(tzinfo=None))\
+            .where(self.attendance.c.Commencement_Date == start_date.replace(tzinfo=None))\
+            .where(sql.func.datediff(self.attendance.c.Record_Time, date) == 0)
+        return self.execute(query)[0].fetchone() is not None
+
+    def get_schedules_for_group(self, user_id, group):
+        query = sql.select([ self.schedule, self.user.c.Name.label('CreatorName') ]) \
+            .select_from(self.schedule.join(
+                self.user, onclause=(self.user.c.ID == self.schedule.c.Creator)
+            ))\
+            .where(
+                (self.schedule.c.OID == sql.select([ self.user.c.OID ])\
+                    .where(self.user.c.ID == user_id).scalar_subquery()) &
+                (self.schedule.c.GName == group)
+            )
         return self.execute(query)[0].fetchall()
 
     def get_schedules_for_user(self, user_id, date):
-        query = sql.select([ self.schedule ]) \
+        query = sql.select([ self.schedule, self.user.c.Name.label('CreatorName') ]) \
+            .select_from(self.schedule.join(
+                self.user, onclause=(self.user.c.ID == self.schedule.c.Creator)
+            ))\
             .where(
                 (self.schedule.c.OID == sql.select([ self.user.c.OID ])\
                     .where(self.user.c.ID == user_id).scalar_subquery())
@@ -295,15 +416,12 @@ class AttendanceDatabase:
         result = list(self.execute(query)[0].fetchall())
         filtered_result = []
         for row in result:
-            if row.Status == EventStatus.ONE_TIME.value and row.Commencement_Date == date:
+            if row.Status == EventStatus.ONE_TIME.value and abs((row.Commencement_Date - date.date()).total_seconds()) < (24*3600):
                 filtered_result.append(row)
             elif row.Status == EventStatus.RECURRING.value:
-                if (date - row.Commencement_Date).days % row.Frequency == 0:
+                if (date.date() - row.Commencement_Date).days % row.Frequency == 0:
                     filtered_result.append(row)
         return filtered_result
-
-    def do_nothing(self):
-        pass
 
 def get_instance(database_engine):
     """ Returns the current instance of the AttendanceDatabase abstraction. """

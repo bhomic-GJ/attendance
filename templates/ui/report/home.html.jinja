@@ -1,53 +1,125 @@
 {% extends "base.html.jinja" %}
 
 {% block sub_main %}
-<h2 class='title'>Report Panel</h2>
-
-<form action="" method="POST">
-    <div class='card mt-6'>
-        <div class='columns is-vcentered'>
-            <div class='column is-3'>
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">Start Date</label>
-                    </div>
-                    <div class="control">
-                        <input class="input" type="date" placeholder="Enter Start date" name='start_date' required>
-                    </div>
-                </div>
-            </div>
-
-            <div class='column is-3'>
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">End Date</label>
-                    </div>
-                    <div class="control">
-                        <input class="input" type="date" placeholder="Enter End date" name='end_date' required>
+    <div class='block has-text-centered'>
+        <h2 class='title'>Report Panel</h2>
+    </div>
+    <div class='card mt-6 pl-4 pr-4'>
+        <form>
+            <div class='columns is-vcentered is-centered'>
+                <div class='column is-narrow'>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label">Start Date</label>
+                        </div>
+                        <div class="control">
+                            <input class="input" type="date" placeholder="Start Date" data-name='start_date' required data-set-current>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class=' column is-3'>
-                <div class="select is-rounded is-fullwidth">
-                    <select name="group" class="">
-                        {% for i in range(5): %}
-                        <option value="{{ loop.index }}"> Index {{ i | e}}
-                        </option>
-                        {% endfor %}
-                    </select>
+                <div class='column is-narrow'>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label">End Date</label>
+                        </div>
+                        <div class="control">
+                            <input class="input" type="date" placeholder="End Date" data-name='end_date' required data-set-current>
+                        </div>
+                    </div>
+                </div>
+
+                <div class=' column is-3'>
+                    <div class="select is-rounded is-fullwidth">
+                        <select name="group">
+                            {% for group in groups %}
+                                <option value="{{ group.Name }}">Group {{ group.Name -}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class='column is-narrow'>
+                    <button class="button is-primary">Generate</button>
                 </div>
             </div>
-
-            <div class='column is-3'>
-                <div class="field is-grouped is-grouped-right">
-                    <div class="control">
-                        <button class="button is-primary is-fullwidth">Submit</button>
+        </form>
+    </div>
+    {% if attendance %}
+        {% for entry in attendance %}
+            <div class="block mt-6">
+                <div class="block">
+                    <h1 class="title">{{ entry.schedule.Title }}</h1>
+                    <div class='columns is-centered is-vcentered'>
+                        <div class='column is-expanded'>
+                            <p class="subtitle">
+                                <span>Group {{ entry.schedule.GName -}}</span>,
+                                <span>{{ entry.schedule.CreatorName }}</span>
+                            </p>
+                        </div>
+                        <div class='column'>
+                            <p class="subtitle">
+                                <span>{{ entry.schedule.Commencement_Date | field("%B %e, %Y") }}</span>,
+                                <span>{{ entry.schedule.Start_Time | field("%H:%M") }}</span> -
+                                <span>{{ entry.schedule.End_Time | field("%H:%M") }}</span> UTC
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class='table is-fullwidth is-striped is-hoverable'>
+                        <thead>
+                            <tr class='has-text-primary'>
+                                <th>User</th>
+                                {% for date in dates %}
+                                    <th>{{- date | field('%d/%m') -}}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in entry.attendance %}
+                            <tr>
+                                <th>
+                                    <a href="{{ url_for('routes.users.user', user_id=row[0].ID) }}" title="{{ row[0].Name }}">
+                                        {{- row[0].Name | e -}}
+                                    </a>
+                                </th>
+                                {% for cell in row %}
+                                    <td> {{- cell.Record -}} </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                            {# {% for username in range(30)%}
+                            <tr>
+                                <td>
+                                    {{ username }}
+                                </td>
+                                {% for i in range (10)%}
+                                <td>
+                                    Present
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %} #}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class='block mt-6'>
+            <div class='columns is-centered'>
+                <div class='column is-half-desktop'>
+                    <div class='notification is-info is-light'>
+                        <section class='section'>
+                            Use the form bar above to generate a brief attendance report.
+                        </section>
+                        <section class='section'>
+                            Reports for schedules covering a certain group between the given start and end dates will be generated.
+                        </section>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
-
+    {% endif %}
 {% endblock sub_main %}

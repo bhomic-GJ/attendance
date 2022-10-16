@@ -21,8 +21,7 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
             flask.abort(400, description="Specified organization does not exist")
 
         user = auth.current_user()
-        database.remove_user_associations(user['ID'])
-        database.update_user(user['ID'], { 'OID': result.OID })
+        database.remove_user_associations_and_migrate(user['ID'], result.OID)
 
         return flask.jsonify({
             'status': True,
@@ -45,8 +44,7 @@ def create_blueprint(auth, tokens, database, org_codes, *args, **kwargs):
         }
 
         database.execute((database.organization.insert(), params))
-        database.remove_user_associations(user['ID'])
-        database.update_user(user['ID'], { 'OID': params['OID'] })
+        database.remove_user_associations_and_migrate(user['ID'], params['OID'])
         if database.get_user_role(user['ID']) != 'admin':
             database.execute((database.admin.insert(), { 'ID': user['ID'] }))
 

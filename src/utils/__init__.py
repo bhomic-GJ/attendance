@@ -16,19 +16,23 @@ def format_date(date, fmtstr):
     return date.strftime(fmtstr)
 
 def parse_date(datestr):
-    if not datestr: return datetime.datetime.now()
+    if not datestr: return datetime.datetime.now().astimezone()
     try:
-        return isodate.parse_datetime(datestr)
+        return isodate.parse_datetime(datestr).astimezone()
     except isodate.ISO8601Error:
         return datetime.datetime.combine(
             isodate.parse_date(datestr), datetime.time.min
-        )
+        ).astimezone()
 
 def parse_time(timestr):
-    return isodate.parse_time(timestr)
+    if not timestr: return current_time()
+    if 'T' in timestr: timestr = timestr.split('T', maxsplit=2)[1]
+    return datetime.datetime.combine(
+        datetime.datetime.today(), isodate.parse_time(timestr)
+    ).astimezone().timetz()
 
 def current_time():
-    return datetime.datetime.now().time()
+    return datetime.datetime.now().astimezone().timetz()
 
 class CodeGenerator:
     """ Defines an abstraction that generates assured unique codes
@@ -43,6 +47,9 @@ class CodeGenerator:
     def __init__(self, codes = None, gen_fx = None):
         self.__codes = codes or []
         self.__generator = gen_fx or self.__default_generator
+
+    def reseed(self, codes):
+        self.__codes = codes or []
 
     def generate(self, *args, **kwargs):
         """ Generates a unique code using the generator function. """

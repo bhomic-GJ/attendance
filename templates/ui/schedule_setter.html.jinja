@@ -1,294 +1,53 @@
 {% extends "base.html.jinja" %}
 
+{% block title %}
+    Events between {{ dates[0] | field("%B %e") }} to {{ dates[-1] | field("%B %e") }}
+{% endblock title %}
+
 {% block css_block %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.sched.css') }}">
-{% endblock css_block %}
-
-
-{% block sub_main %}
-
-<div>
-    <link rel="stylesheet" href= "https://raw.githubusercontent.com/alakise/bulma-floating-button/master/dist/css/bulma-floating-button.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.sched.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css"
         integrity="sha256-jLWPhwkAHq1rpueZOKALBno3eKP3m4IMB131kGhAlRQ=" crossorigin="anonymous">
+{% endblock css_block %}
 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"
-        integrity="sha256-XCdgoNaBjzkUaEJiauEq+85q/xi/2D4NcB3ZHwAapoM=" crossorigin="anonymous"></script>
-
-
-    <div class= 'columns mt-1' style = "padding:1rem">
-        <div class= 'column is-12'>
+{% block sub_main %}
+    <div class='columns px-4 pt-2'>
+        <div class='column is-12'>
             <div id='calendar'></div>
         </div>
-
-        <div class= 'column is-0'>
-            <div id="modal-js-example" class="modal">
-            <div class="modal-background"></div>
-
-            <div class="modal-content">
-                <div class="box">
-                <div class="scheduleform">
-                        <article class="container bcontainer">
-                        <section class="hero">
-                        <div class="hero-body">
-                            <div class="container has-text-centered">
-                            <p class="title fwhite bt">
-                                Create a new Schedule
-                            </p>
-                            </div>
+        {% if current_user.role == 'admin' %}
+            <div class='column is-0'>
+                <div id="modal-js-example" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-content">
+                        <div class="box">
+                            {% include "impl/components/schedule.html.jinja" %}
                         </div>
-                        </section>
-                        <div class="columns is-centered">
-                            <div class="column">
-                            <div class='box'>
-                                <form action="#">
-
-                                <div class="field">
-                                    <label class="label">Group Name</label>
-                                    <div class="control">
-                                    <div class="select is-fullwidth">
-                                        <select>
-                                        <option>Group 1</option>
-                                        <option>Group 2</option>
-                                        </select>
-                                    </div>
-                                    </div>
-                                </div>
-
-                                <div class="field">
-                                    <label class="label">Start Time</label>
-                                    <div class="control">
-                                    <input class="input" type="time" name='start_time' placeholder="Start Time" required>
-                                    </div>
-                                </div>
-
-
-
-                                <div class="field">
-                                    <label class="label">End Time</label>
-                                    <div class="control">
-                                    <input class="input" type="time" name='end_time' placeholder="End Time" required>
-                                    </div>
-                                </div>
-
-
-
-                                <div class="field">
-                                    <label class="label">Commencement Date</label>
-                                    <div class="control">
-                                    <input class="input" type="date" name='start_date' placeholder="Commencement Date" required>
-                                    </div>
-                                </div>
-
-
-                                <div class="field">
-                                    <label class="label">Title</label>
-                                    <div class="control">
-                                    <input class="input" type="text" name='title' placeholder="title">
-                                    </div>
-                                </div>
-
-
-
-                                <div class="field">
-                                    <label class="label">Status</label>
-                                    <div class="control">
-                                    <input class="input" type="text" name='status' placeholder="Status" required>
-                                    </div>
-                                </div>
-
-
-                                <div class="field">
-                                    <label class="label">Frequency</label>
-                                    <div class="control">
-                                    <input class="input" type="text" name='frequency' placeholder="Frequency" required>
-                                    </div>
-                                </div>
-
-                                <div class="control">
-                                    <button class="button is-primary">Submit</button>
-                                </div>
-                                </form>
-                            </div>
-                            </div>
-                        </div>
-                        </article>
-
-                        <div>
-
                     </div>
-                </div>
+                    <button class="modal-close is-large" aria-label="close"></button>
                 </div>
             </div>
-
-            <button class="modal-close is-large" aria-label="close"></button>
-        </div>
-             <a href="#" class="button is-floating is-primary">
-                <i class=" js-modal-trigger fas fa-plus" data-target="modal-js-example"></i>
-            </a>
-        </div>
+        {% endif %}
     </div>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
-                {% with data = [
-                        {
-                            "GName": "A",
-                            "Creator": "user1",
-                            "Start_Time": "09:00",
-                            "Start_Time_Row": 9,
-                            "End_Time": "11:00",
-                            "Time_Span": 2,
-                            "Status": 1,
-                            "Frequency": 7
-                        },
-                        {
-                            "GName": "B",
-                            "Creator": "user1",
-                            "Start_Time": "12:00",
-                            "Start_Time_Row": 12,
-                            "End_Time": "13:00",
-                            "Time_Span": 1,
-                            "Status": 1,
-                            "Frequency": 7
-                        },
-                        {
-                            "GName": "C",
-                            "Creator": "user1",
-                            "Start_Time": "15:00",
-                            "Start_Time_Row": 15,
-                            "End_Time": "18:00",
-                            "Time_Span": 4,
-                            "Status": 1,
-                            "Frequency": 7
-                        }
-                    ]
-            %}
-                events: [
-                    {% for event in data %}
-                        {
-                            title: '{{ event.GName }}-{{ event.Creator }}',
-                            start: '2022-07-25T{{- event.Start_Time -}}:00',
-                            end: '2022-07-25T{{- event.End_Time -}}:00',
-                            mygroup: 'TEMP'
-                        },
-                    {% endfor %}
-                ]
-            {% endwith %}
-                ,
-
-                eventClick: function(info) {
-                    //alert('Event: ' + info.event.title);
-                    //alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                    //alert('View: ' + info.view.type);
-
-                    // change the border color just for fun
-                    info.el.style.borderColor = 'red';
-
-                    //console.log('Event: ');
-                    //console.log(info.event.title);
-                    //console.log(info.event.start);
-                    console.log(info.event);
-
-                    let gname = info.event.title.split('-')[0];
-
-                    let payload = {
-                        'group': gname,
-                        'start': info.event.startStr,
-                        'end': info.event.endStr
-                    };
-
-                    //console.log(payload);
-
-                    let form = document.createElement('form');
-                    form.style.visibility = 'hidden'; 
-                    form.method = 'POST';
-
-
-                    let current_role = 'admin';
-                    if(current_role == 'admin'){
-                        form.action = '/playground';
-                    }
-                    else
-                    if(current_role == 'non-admin'){
-                        form.action = '';
-                    }        
-
-                    
-                    for(let key in payload) {
-                        let input = document.createElement('input');
-                        input.name = key;
-                        input.value = payload[key];
-                        form.appendChild(input);
-                    }
-                    
-                    //console.log(form);
-
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-
-            });
-
-            calendar.render();
-
-        });
-    </script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-  // Functions to open and close a modal
-  function openModal($el) {
-    $el.classList.add('is-active');
-  }
-
-  function closeModal($el) {
-    $el.classList.remove('is-active');
-  }
-
-  function closeAllModals() {
-    (document.querySelectorAll('.modal') || []).forEach(($modal) => {
-      closeModal($modal);
-    });
-  }
-
-  // Add a click event on buttons to open a specific modal
-  (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
-    const modal = $trigger.dataset.target;
-    const $target = document.getElementById(modal);
-
-    $trigger.addEventListener('click', () => {
-      openModal($target);
-    });
-  });
-
-  // Add a click event on various child elements to close the parent modal
-  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
-    const $target = $close.closest('.modal');
-
-    $close.addEventListener('click', () => {
-      closeModal($target);
-    });
-  });
-
-  // Add a keyboard event to close all modals
-  document.addEventListener('keydown', (event) => {
-    const e = event || window.event;
-
-    if (e.keyCode === 27) { // Escape key
-      closeAllModals();
-    }
-  });
-});
-    </script>
-
-
 {% endblock sub_main %}
 
 {% block scripts_block %}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"
+        integrity="sha256-XCdgoNaBjzkUaEJiauEq+85q/xi/2D4NcB3ZHwAapoM=" crossorigin="anonymous"></script>
+    <script>
+        const globalScheduleRoute = "{{ url_for('routes.sched.view') }}";
+        const globalInitDate = "{{ dates[0] }}";
+        const globalEvents = [
+            {% for date in dates %}
+                {% for event in schedules[loop.index0] %}
+                    {
+                        title: '{{event.Title}} - {{ event.GName }} . {{ event.CreatorName }}',
+                        start: new Date('{{ date | field('%Y-%m-%d') }}T{{- event.Start_Time -}}+0000'),
+                        end: new Date('{{ date | field('%Y-%m-%d') }}T{{- event.End_Time -}}+0000'),
+                    },
+                {% endfor %}
+            {% endfor %}
+        ];
+    </script>
+    <script src="{{ url_for('static', filename='scripts/schedule.js') }}"></script>
 {% endblock scripts_block %}

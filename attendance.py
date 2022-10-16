@@ -30,6 +30,7 @@ auth     = HTTPTokenAuth(scheme='Bearer')
 Session(app)
 
 tokens   = {}
+admins   = {}
 
 engine   = db.create_engine(app.config['SQLALCHEMY_DATABASE_URI'], { 'echo': False })
 database = utils.database.get_instance(engine)
@@ -60,17 +61,17 @@ def verify_token(token):
 
 @auth.get_user_roles
 def get_user_roles(user):
-    # if 'role' not in user:
-    #     user['role'] = database.get_user_role(user['ID'])
-    # return user['role']
-    return database.get_user_role(user['ID'])
+    if 'role' not in user:
+        user['role'] = database.get_user_role(user['ID'])
+    return user['role']
 
 # Register the standard endpoints.
 app.register_blueprint(
     routes.create_blueprint(
         auth, tokens, database,
         socketio=socketio,
-        org_codes=org_codes
+        org_codes=org_codes,
+        admins=admins,
     )
 )
 # Register the API endpoint.
@@ -79,6 +80,7 @@ app.register_blueprint(
         auth, tokens, database,
         socketio=socketio,
         org_codes=org_codes,
+        admins=admins,
     )
 )
 
@@ -91,18 +93,6 @@ def playground():
         'form': { key: utils.get_field(flask.request, key, allow_null=True) or '' for key in flask.request.form },
         'session': { **flask.session }
     })
-
-@app.route("/attadm")
-@routes.login_required(auth)
-def attendance_admin():
-    user = auth.current_user() or flask.g.user
-    print(user['role'])
-    qr_path = utils.qrcode.generate_qr("{ message: 'Hello world!' }", "assets", "qr", prefix="static")
-    return flask.render_template(
-        "ui/attendance.html.jinja",
-        current_user=user,
-        qr_url=flask.url_for('static', filename=qr_path)
-    )
 
 @app.route("/")
 def index():
